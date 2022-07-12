@@ -7,32 +7,106 @@ generator client {
   provider = "prisma-client-js"
 }
 
-model User {
+model Admin {
   id    String @id @default(cuid())
+  name  String
   email String @unique
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  password Password?
-  notes    Note[]
+  password AdminPassword?
 }
 
-model Password {
+model AdminPassword {
   hash String
 
-  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  userId String @unique
+  admin   Admin   @relation(fields: [adminId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  adminId String @unique
 }
 
-model Note {
+model Participant {
   id    String @id @default(cuid())
-  title String
-  body  String
+  name  String
+  email String @unique
+  validatedEmail Boolean @default(false)
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  signups Signup[]
+}
 
-  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  userId String
+model Signup {
+  id           String @unique @default(cuid())
+  event        Event @relation(fields: [eventId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  participant  Participant @relation(fields: [participantId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  
+  signupTime   DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  
+  signupEventInputValues SignupEventInputValue[]
+  
+  eventId       String @unique
+  participantId String @unique
+  @@id([participantId, eventId])
+}
+
+model Event {
+  id                String @id @default(cuid())
+  name              String
+  description       String?
+  date              DateTime
+  signupDeadline    DateTime?
+  participantsLimit Int?
+
+  signups          Signup[]
+  eventInputFields EventInputField[]
+}
+
+model EventInputField {
+  id         String @unique @default(cuid())
+  event      Event @relation(fields: [eventId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  inputField InputField @relation(fields: [inputFieldId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  
+  signupEventInputValues SignupEventInputValue[]
+  
+  eventId      String @unique
+  inputFieldId String @unique
+  @@id([eventId, inputFieldId])
+}
+
+model SignupEventInputValue {
+  id              String @unique @default(cuid())
+  signup          Signup @relation(fields: [signupId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  eventInputField EventInputField @relation(fields: [eventInputFieldId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  
+  value           String
+  
+  signupId          String @unique
+  eventInputFieldId String @unique
+  @@id([signupId, eventInputFieldId])
+}
+
+model InputField {
+  id                String @id @default(cuid())
+  name              String
+  type              InputFieldType @relation(fields: [typeId], references: [name], onDelete: Cascade, onUpdate: Cascade)
+  required          Boolean @default(false)
+  options           Option[] // only for InputFieldType.Select
+  
+  eventInputFields  EventInputField[]
+  typeId  String @unique
+}
+
+model InputFieldType {
+  name String @unique
+  
+  inputFields InputField[]
+}
+
+model Option {
+  id         String @unique @default(cuid())
+  name       String
+  inputField InputField @relation(fields: [inputFieldId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  
+  inputFieldId String @unique
+  @@id([name, inputFieldId])
 }
