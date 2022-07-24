@@ -1,14 +1,14 @@
 import { createCookieSessionStorage, redirect } from "@remix-run/node";
 import invariant from "tiny-invariant";
 
-import type { User } from "~/models/user.server";
-import { getUserById } from "~/models/user.server";
+import type { Admin } from "~/models/admin.server";
+import { getAdminById } from "~/models/admin.server";
 
 invariant(process.env.SESSION_SECRET, "SESSION_SECRET must be set");
 
 export const sessionStorage = createCookieSessionStorage({
   cookie: {
-    name: "__session",
+    name: "__session_admin",
     httpOnly: true,
     path: "/",
     sameSite: "lax",
@@ -17,65 +17,65 @@ export const sessionStorage = createCookieSessionStorage({
   },
 });
 
-const USER_SESSION_KEY = "userId";
+const ADMIN_SESSION_KEY = "adminId";
 
-export async function getSession(request: Request) {
+export async function getAdminSession(request: Request) {
   const cookie = request.headers.get("Cookie");
   return sessionStorage.getSession(cookie);
 }
 
-export async function getUserId(
+export async function getAdminId(
   request: Request
-): Promise<User["id"] | undefined> {
-  const session = await getSession(request);
-  const userId = session.get(USER_SESSION_KEY);
-  return userId;
+): Promise<Admin["id"] | undefined> {
+  const session = await getAdminSession(request);
+  const adminId = session.get(ADMIN_SESSION_KEY);
+  return adminId;
 }
 
-export async function getUser(request: Request) {
-  const userId = await getUserId(request);
-  if (userId === undefined) return null;
+export async function getAdmin(request: Request) {
+  const adminId = await getAdminId(request);
+  if (adminId === undefined) return null;
 
-  const user = await getUserById(userId);
-  if (user) return user;
+  const admin = await getAdminById(adminId);
+  if (admin) return admin;
 
   throw await logout(request);
 }
 
-export async function requireUserId(
+export async function requireAdminId(
   request: Request,
   redirectTo: string = new URL(request.url).pathname
 ) {
-  const userId = await getUserId(request);
-  if (!userId) {
+  const adminId = await getAdminId(request);
+  if (!adminId) {
     const searchParams = new URLSearchParams([["redirectTo", redirectTo]]);
-    throw redirect(`/login?${searchParams}`);
+    throw redirect(`/admin/login?${searchParams}`);
   }
-  return userId;
+  return adminId;
 }
 
-export async function requireUser(request: Request) {
-  const userId = await requireUserId(request);
+export async function requireAdmin(request: Request) {
+  const adminId = await requireAdminId(request);
 
-  const user = await getUserById(userId);
-  if (user) return user;
+  const admin = await getAdminById(adminId);
+  if (admin) return admin;
 
   throw await logout(request);
 }
 
-export async function createUserSession({
+export async function createAdminSession({
   request,
-  userId,
+  adminId,
   remember,
   redirectTo,
 }: {
   request: Request;
-  userId: string;
+  adminId: string;
   remember: boolean;
   redirectTo: string;
 }) {
-  const session = await getSession(request);
-  session.set(USER_SESSION_KEY, userId);
+  const session = await getAdminSession(request);
+  session.set(ADMIN_SESSION_KEY, adminId);
   return redirect(redirectTo, {
     headers: {
       "Set-Cookie": await sessionStorage.commitSession(session, {
@@ -88,7 +88,7 @@ export async function createUserSession({
 }
 
 export async function logout(request: Request) {
-  const session = await getSession(request);
+  const session = await getAdminSession(request);
   return redirect("/", {
     headers: {
       "Set-Cookie": await sessionStorage.destroySession(session),

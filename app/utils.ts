@@ -1,7 +1,7 @@
 import { useMatches } from "@remix-run/react";
 import { useMemo } from "react";
 
-import type { User } from "~/models/user.server";
+import type { Admin } from "~/models/admin.server";
 
 const DEFAULT_REDIRECT = "/";
 
@@ -44,28 +44,43 @@ export function useMatchesData(
   return route?.data;
 }
 
-function isUser(user: any): user is User {
-  return user && typeof user === "object" && typeof user.email === "string";
+function isAdmin(admin: any): admin is Admin {
+  return admin && typeof admin === "object" && typeof admin.email === "string" && typeof admin.name === "string";
 }
 
-export function useOptionalUser(): User | undefined {
+export function useOptionalAdmin(): Admin | undefined {
   const data = useMatchesData("root");
-  if (!data || !isUser(data.user)) {
+  if (!data || !isAdmin(data.admin)) {
     return undefined;
   }
-  return data.user;
+  return data.admin;
 }
 
-export function useUser(): User {
-  const maybeUser = useOptionalUser();
-  if (!maybeUser) {
+export function useAdmin(): Admin {
+  const maybeAdmin = useOptionalAdmin();
+  if (!maybeAdmin) {
     throw new Error(
-      "No user found in root loader, but user is required by useUser. If user is optional, try useOptionalUser instead."
+      "No admin found in root loader, but admin is required by useAdmin. If admin is optional, try useOptionalAdmin instead."
     );
   }
-  return maybeUser;
+  return maybeAdmin;
 }
 
 export function validateEmail(email: unknown): email is string {
   return typeof email === "string" && email.length > 3 && email.includes("@");
+}
+
+export function datePlusDays (date: string, days: number) : string {
+  const d = new Date(date);
+  d.setDate(d.getDate() + days);
+  return d.toISOString().split('T')[0];
+}
+
+export function dateToString (date: Date) : string {
+  return date.toISOString().split('T')[0];
+}
+
+export function dateTimePlusMinutes (date: Date, minutes: number) : Date {
+  date.setMinutes(date.getMinutes() + minutes);
+  return date;
 }

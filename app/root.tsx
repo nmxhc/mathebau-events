@@ -14,7 +14,7 @@ import {
 } from "@remix-run/react";
 
 import tailwindStylesheetUrl from "./styles/tailwind.css";
-import { getUser } from "./session.server";
+import { getAdmin } from "./session_admin.server";
 
 export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: tailwindStylesheetUrl }];
@@ -22,17 +22,17 @@ export const links: LinksFunction = () => {
 
 export const meta: MetaFunction = () => ({
   charset: "utf-8",
-  title: "Remix Notes",
+  title: "Mathebau Events",
   viewport: "width=device-width,initial-scale=1",
 });
 
 type LoaderData = {
-  user: Awaited<ReturnType<typeof getUser>>;
+  admin: Awaited<ReturnType<typeof getAdmin>>;
 };
 
 export const loader: LoaderFunction = async ({ request }) => {
   return json<LoaderData>({
-    user: await getUser(request),
+    admin: await getAdmin(request),
   });
 };
 

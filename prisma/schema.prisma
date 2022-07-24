@@ -12,6 +12,8 @@ model Admin {
   name  String
   email String @unique
 
+  eventAdmins EventAdmin[]
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
@@ -34,6 +36,16 @@ model Participant {
   signups Signup[]
 }
 
+model EventAdmin {
+  id    String @unique @default(cuid())
+  admin Admin @relation(fields: [adminId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  event Event @relation(fields: [eventId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  eventId String
+  adminId String
+  @@id([eventId, adminId])
+}
+
 model Signup {
   id           String @unique @default(cuid())
   event        Event @relation(fields: [eventId], references: [id], onDelete: Cascade, onUpdate: Cascade)
@@ -44,21 +56,26 @@ model Signup {
   
   signupEventInputValues SignupEventInputValue[]
   
-  eventId       String @unique
-  participantId String @unique
+  eventId       String
+  participantId String
   @@id([participantId, eventId])
 }
 
 model Event {
   id                String @id @default(cuid())
   name              String
-  description       String?
-  date              DateTime
-  signupDeadline    DateTime?
+  description       String
+  location          String
+  startDate         DateTime
+  endDate           DateTime
+  signupStartDate   DateTime @default(now())
+  signupEndDate     DateTime
   participantsLimit Int?
+  cost              String?
 
   signups          Signup[]
   eventInputFields EventInputField[]
+  eventAdmins      EventAdmin[]
 }
 
 model EventInputField {
@@ -68,8 +85,8 @@ model EventInputField {
   
   signupEventInputValues SignupEventInputValue[]
   
-  eventId      String @unique
-  inputFieldId String @unique
+  eventId      String
+  inputFieldId String
   @@id([eventId, inputFieldId])
 }
 
@@ -80,8 +97,8 @@ model SignupEventInputValue {
   
   value           String
   
-  signupId          String @unique
-  eventInputFieldId String @unique
+  signupId          String
+  eventInputFieldId String
   @@id([signupId, eventInputFieldId])
 }
 
@@ -93,7 +110,7 @@ model InputField {
   options           Option[] // only for InputFieldType.Select
   
   eventInputFields  EventInputField[]
-  typeId  String @unique
+  typeId            String
 }
 
 model InputFieldType {
@@ -107,6 +124,6 @@ model Option {
   name       String
   inputField InputField @relation(fields: [inputFieldId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   
-  inputFieldId String @unique
+  inputFieldId String
   @@id([name, inputFieldId])
 }
