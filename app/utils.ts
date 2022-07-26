@@ -69,18 +69,3 @@ export function useAdmin(): Admin {
 export function validateEmail(email: unknown): email is string {
   return typeof email === "string" && email.length > 3 && email.includes("@");
 }
-
-export function datePlusDays (date: string, days: number) : string {
-  const d = new Date(date);
-  d.setDate(d.getDate() + days);
-  return d.toISOString().split('T')[0];
-}
-
-export function dateToString (date: Date) : string {
-  return date.toISOString().split('T')[0];
-}
-
-export function dateTimePlusMinutes (date: Date, minutes: number) : Date {
-  date.setMinutes(date.getMinutes() + minutes);
-  return date;
-}

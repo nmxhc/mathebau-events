@@ -13,10 +13,10 @@ export const Footer = () => {
         </div>
         { admin
           ? (<span>Hi {admin.name}!
-            <Form action='/admin/logout' method='post' className=' text-blue-300 inline-block ml-2'>
+            <Form action='/admin-logout' method='post' className=' text-blue-300 inline-block ml-2'>
               <button type='submit'>Logout</button>
             </Form></span>)
-          : (<Link to='/admin/login' className=' text-blue-300'>Admin Login</Link>)}
+          : (<Link to='/admin-login' className=' text-blue-300'>Admin Login</Link>)}
       </div>
     </footer>
   )

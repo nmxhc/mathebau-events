@@ -1,6 +1,6 @@
 import type { FC } from 'react'
 
-export const Label:FC<{htmlFor: string}> = ({children, htmlFor}) => {
+export const InputLabel:FC<{htmlFor: string}> = ({children, htmlFor}) => {
   return (
     <label
       htmlFor={htmlFor}

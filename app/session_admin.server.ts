@@ -49,7 +49,7 @@ export async function requireAdminId(
   const adminId = await getAdminId(request);
   if (!adminId) {
     const searchParams = new URLSearchParams([["redirectTo", redirectTo]]);
-    throw redirect(`/admin/login?${searchParams}`);
+    throw redirect(`/admin-login?${searchParams}`);
   }
   return adminId;
 }

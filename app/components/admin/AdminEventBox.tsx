@@ -2,13 +2,13 @@ import { Link } from '@remix-run/react'
 import moment from 'moment'
 import type { FC } from 'react'
 import type { Event } from '~/models/event.server'
-import { Box } from './Box'
+import { Box } from '../elementary/Box'
 export const AdminEventBox:FC<{event: Event}> = ({event}) => {
   return (
     <Box>
       <div className='flex justify-between items-center mb-4'>
         <h2 className='text-2xl text-lime-200'>{event.name}</h2>
-        <Link to={`/admin/event/${event.id}`}>
+        <Link to={`/admin/events/${event.id}`}>
           <button  className='px-4 py-2 bg-lime-600 text-lime-50 rounded-md hover:bg-lime-700 transition duration-200 ease-in-out'>
             <b>Event Details</b>
           </button>

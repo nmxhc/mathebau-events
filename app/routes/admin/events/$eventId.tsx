@@ -2,7 +2,9 @@
 
 const EventDetailsPage = () => {
   return (
-    <div>EventDetailsPage</div>
+    <>
+      EventDetailsPage
+    </>
   )
 }
 
