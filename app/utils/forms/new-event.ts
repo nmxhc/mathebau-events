@@ -17,6 +17,8 @@ const requireEndDateToBeADate = getDateValidator("Ungültiges Enddatum");
 const requireSignupStartDateToBeADate = getDateValidator("Ungültiger Anmeldestart");
 const requireSignupEndDateToBeADate = getDateValidator("Ungültiger Anmeldeschluss");
 
+
+//TODO: Refactor
 const requireEndDateToBeAfterStartDate = getValidator((value, formData) => {
   const startDate = formData.get("startDate");
   if (typeof startDate === "string") {
@@ -27,6 +29,39 @@ const requireEndDateToBeAfterStartDate = getValidator((value, formData) => {
   }
   return true;
 }, "Startdatum muss vor dem Enddatum liegen");
+
+const requireSignupEndDateToBeAfterSignupStartDate = getValidator((value, formData) => {
+  const signupStartDate = formData.get("signupStartDate");
+  if (typeof signupStartDate === "string") {
+    const signupEndDate = value as string;
+    if (new Date(signupEndDate) < new Date(signupStartDate)) {
+      return false;
+    }
+  }
+  return true;
+}, "Anmeldeschluss muss nach dem Anmeldestart liegen");
+
+const requireSignupEndDateToBeBeforeStartDate = getValidator((value, formData) => {
+  const startDate = formData.get("startDate");
+  if (typeof startDate === "string") {
+    const signupEndDate = value as string;
+    if (new Date(signupEndDate) > new Date(startDate)) {
+      return false;
+    }
+  }
+  return true;
+}, "Anmeldeschluss muss vor dem Startdatum liegen");
+
+const requireSignupStartDateToBeBeforeStartDate = getValidator((value, formData) => {
+  const startDate = formData.get("startDate");
+  if (typeof startDate === "string") {
+    const signupStartDate = value as string;
+    if (new Date(signupStartDate) > new Date(startDate)) {
+      return false;
+    }
+  }
+  return true;
+}, "Anmeldestart muss vor dem Startdatum liegen");
 
 export const newEventFormValidationSchema: InputValidationSchema = [
   {
@@ -51,11 +86,11 @@ export const newEventFormValidationSchema: InputValidationSchema = [
     parser: getIdentityParser(),
   }, {
     inputName: 'signupStartDate',
-    validators: [ requireSignupStartDate, requireSignupStartDateToBeADate ],
+    validators: [ requireSignupStartDate, requireSignupStartDateToBeADate, requireSignupStartDateToBeBeforeStartDate ],
     parser: getDateParser(),
   }, {
     inputName: 'signupEndDate',
-    validators: [ requireSignupEndDate, requireSignupEndDateToBeADate ],
+    validators: [ requireSignupEndDate, requireSignupEndDateToBeADate, requireSignupEndDateToBeBeforeStartDate, requireSignupEndDateToBeAfterSignupStartDate ],
     parser: getEndOfDayDateParser(),
   }, {
     inputName: 'participantsLimit',
