@@ -1,84 +1,76 @@
-// import { json } from '@remix-run/server-runtime';
-
 import { json } from '@remix-run/server-runtime';
 
-interface ErrorMessages {[k: string]: string}
+export interface ErrorMessages {[k: string]: string}
+
+export interface FormDataForRefill {[k: string]: FormDataEntryValue | null}
 
 export interface ActionData {
   errors?: ErrorMessages
+  formDataForRefill?: FormDataForRefill
 }
 
-interface Validator {
-  (value: FormDataEntryValue|null): string|undefined;
+export type Validator = {
+  (value: FormDataEntryValue|null, formData: FormData): string|undefined;
 }
 
-interface FormValueCondition {
-  (value: FormDataEntryValue|null): boolean;
+export type Parser = {
+  (data: {inputName: string, value: FormDataEntryValue|null}): {propName: string, value: any}
 }
 
-type InputValidationObject = {
-  name: string;
+export type InputValidationObject = {
+  inputName: string;
   validators: Validator[];
+  parser: Parser;
 }
 
 export type InputValidationSchema = InputValidationObject[];
 
-export function getValidator (condition: FormValueCondition, message: string) : Validator {
-  return (value) => {
-    if (condition(value)) {
-      return undefined;
+export function validateFormData (formData: FormData, validationSchema: InputValidationSchema) {
+  const errors: ErrorMessages = {};
+  const formDataForRefill: FormDataForRefill = {};
+  validationSchema.forEach(({ inputName, validators }) => {
+    const value = formData.get(inputName);
+    formDataForRefill[inputName] = value;
+    const failedValidator = validators.find(validator => validator(value, formData));
+    if (failedValidator) {
+      errors[inputName] = failedValidator(value, formData) as string;
     }
-    return message;
+  });
+  return {errors, formDataForRefill};
+}
+
+function parseFormData(formData: FormData, validationSchema: InputValidationSchema) {
+  return validationSchema.reduce((acc: {[k: string]: any}, { inputName, parser }) => {
+    const value = formData.get(inputName);
+    const { propName, value: parsedValue } = parser({inputName, value});
+    acc[propName] = parsedValue;
+    return acc;
+  }
+  , {});
+}
+
+export function validateAndParseFormData (formData: FormData, validationSchema: InputValidationSchema) {
+  const {errors, formDataForRefill} = validateFormData(formData, validationSchema);
+  if (someErrors(errors)) {
+    return {
+      errors,
+      formDataForRefill,
+      parsedData: {},
+    };
+  }
+  return {
+    parsedData: parseFormData(formData, validationSchema),
   };
 }
 
-export function getRequireValidator (message: string) : Validator {
-  return getValidator(value => (typeof value === "string" && value.length > 0), message);
-}
-
-export function getDateValidator (message: string) : Validator {
-  return getValidator(value => (typeof value === "string" && value.length > 0 && new Date(value).toString() !== "Invalid Date"), message);
-}
-
-export function getFormDataErrors (formData: FormData, validationSchema: InputValidationSchema) : ErrorMessages {
-  const errors: ErrorMessages = {};
-  validationSchema.forEach(({ name, validators }) => {
-    const value = formData.get(name);
-    const failedValidator = validators.find(validator => validator(value));
-    if (failedValidator) {
-      errors[name] = failedValidator(value) as string;
-    }
-  });
-  return errors;
-}
 
 export function someErrors (errors: ErrorMessages) : boolean {
   return Object.keys(errors).length > 0;
 }
 
-export function errorResponse (errors: ErrorMessages) {
+export function errorResponse (errors: ErrorMessages, formDataForRefill: FormDataForRefill){
   return json<ActionData>(
-    { errors },
+    { errors, formDataForRefill },
     { status: 400 }
   );
 }
-
-// export function requireValue(value?: FormDataEntryValue) {
-//   if (typeof value !== "string" || value.length === 0) {
-//     throw new Error();
-//   }
-// }
-
-// export function requireFormValues(formValues: {[k: string]: FormDataEntryValue}) {
-//   for (const key in formValues) {
-//     try {
-//       requireValue(formValues[key]);
-//     }
-//     catch (e) {
-//       throw json<ActionData>(
-//         { errors: { key: "Event name is required" } },
-//         { status: 400 }
-//       );
-//     }
-//   }
-// }

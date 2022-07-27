@@ -10,10 +10,11 @@ import { SpaceY } from '~/components/elementary/SpaceY';
 import { EventDataInputBox } from '~/components/admin/events/new/EventDataInputBox';
 import { SplitLeftRight } from '~/components/elementary/SplitLeftRight';
 import type { ActionData} from '~/utils/forms/validation';
+import { validateAndParseFormData} from '~/utils/forms/validation';
 import { errorResponse} from '~/utils/forms/validation';
-import { someErrors } from '~/utils/forms/validation';
-import { getFormDataErrors } from '~/utils/forms/validation';
 import { newEventFormValidationSchema } from '~/utils/forms/new-event';
+import type { createEventArguments } from '~/models/event.server';
+import { createEvent } from '~/models/event.server';
 
 export const loader: LoaderFunction = async ({ request }) => {
   await requireAdminId(request);
@@ -23,25 +24,18 @@ export const loader: LoaderFunction = async ({ request }) => {
 export const action: ActionFunction = async ({ request }) => {
   const adminId = await requireAdminId(request);
   const formData = await request.formData();
-  const errors = getFormDataErrors(formData, newEventFormValidationSchema);
+  const { errors, formDataForRefill, parsedData } = validateAndParseFormData(formData, newEventFormValidationSchema);
 
-  if (someErrors(errors)) {
-    return errorResponse(errors);
+  if (errors) {
+    return errorResponse(errors, formDataForRefill);
   }
 
-  // Create the event
-  // const event = await createEvent({
-  //   name: eventName,
-  //   startDate: new Date(startDate),
-  //   endDate: dateTimePlusMinutes(new Date(dateStringPlusDays(startDate, 1)),-1),
-  //   location,
-  //   description,
-  //   signupStartDate: new Date(signupStartDate),
-  //   signupEndDate: dateTimePlusMinutes(new Date(dateStringPlusDays(signupStartDate, 1)),-1),
-  //   participantsLimit: participantsLimitInt,
-  //   cost: cost ? cost : undefined,
-  //   adminId
-  // });
+  const event = await createEvent({
+    event: parsedData as createEventArguments['event'],
+    adminId
+  });
+
+  console.log(event);
 
   return redirect(`/admin/event/${/*event.id*/'1'}`);
 }
@@ -61,6 +55,7 @@ export default function NewEventPage() {
       <SpaceY>
         <EventDataInputBox
           errors={actionData?.errors}
+          formDataForRefill={actionData?.formDataForRefill}
         />
 
         <Box>

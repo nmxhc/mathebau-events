@@ -7,7 +7,7 @@ export const DescriptionInput:FC<
 > = ({errorMessage}) => {
   return (
     <TextAreaWithLabelAndErrorMessage
-      name="location"
+      name="description"
       label="Beschreibung"
       rows={4}
       invalid={errorMessage !== undefined}

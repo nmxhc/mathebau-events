@@ -4,18 +4,6 @@ import { prisma } from "~/db.server";
 
 export type { Event } from "@prisma/client";
 
-// export function getNote({
-//   id,
-//   userId,
-// }: Pick<Note, "id"> & {
-//   userId: User["id"];
-// }) {
-//   return prisma.note.findFirst({
-//     select: { id: true, body: true, title: true },
-//     where: { id, userId },
-//   });
-// }
-
 export function getUpcomingEvents() {
   return prisma.event.findMany({
     where: {
@@ -40,29 +28,17 @@ export function getAdminEvents(adminId: Admin["id"]) {
   });
 }
 
-export function createEvent({
-  name,
-  description,
-  location,
-  startDate,
-  endDate,
-  signupStartDate,
-  signupEndDate,
-  participantsLimit,
-  cost,
-  adminId
-}: Pick<Event, 'name'|'description'|'location'|'startDate'|'endDate'|'signupStartDate'|'signupEndDate'> & {adminId: Admin["id"], participantsLimit?: number, cost?: string}) {
-  return prisma.event.create({
+export type createEventArguments = {
+  event: Pick<
+    Event, 'name'|'description'|'location'|'startDate'|'endDate'|'signupStartDate'|'signupEndDate'|'participantsLimit'|'cost'
+  >,
+  adminId: Admin["id"],
+}
+
+export async function createEvent({event, adminId}:createEventArguments) {
+  return await prisma.event.create({
     data: {
-      name,
-      description,
-      location,
-      startDate,
-      endDate,
-      signupStartDate,
-      signupEndDate,
-      participantsLimit,
-      cost,
+      ...event,
       eventAdmins: {
         create: {
           adminId
@@ -71,32 +47,3 @@ export function createEvent({
     }
   });
 }
-
-// export function createNote({
-//   body,
-//   title,
-//   userId,
-// }: Pick<Note, "body" | "title"> & {
-//   userId: User["id"];
-// }) {
-//   return prisma.note.create({
-//     data: {
-//       title,
-//       body,
-//       user: {
-//         connect: {
-//           id: userId,
-//         },
-//       },
-//     },
-//   });
-// }
-
-// export function deleteNote({
-//   id,
-//   userId,
-// }: Pick<Note, "id"> & { userId: User["id"] }) {
-//   return prisma.note.deleteMany({
-//     where: { id, userId },
-//   });
-// }

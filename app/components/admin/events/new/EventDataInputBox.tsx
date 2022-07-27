@@ -4,7 +4,7 @@ import { Box } from '~/components/elementary/Box'
 import { H2 } from '~/components/elementary/H2'
 import { SideToSide } from '~/components/elementary/SideToSide'
 import { SpaceY } from '~/components/elementary/SpaceY'
-import type { ActionDataOfNewEvent } from '~/routes/admin/events/new'
+import type { ActionData } from '~/utils/forms/validation';
 import { theDayBefore, updateDateRangeOfDateInputElement } from '~/utils/dates'
 import { CostInput } from './inputs/CostInput'
 import { DescriptionInput } from './inputs/DescriptionInput'
@@ -16,7 +16,8 @@ import { SignupEndDateInput } from './inputs/SignupEndDateInput'
 import { SignupStartDateInput } from './inputs/SignupStartDateInput'
 import { StartDateInput } from './inputs/StartDateInput'
 
-export const EventDataInputBox:FC<{errors: ActionDataOfNewEvent['errors']}> = ({errors}) => {
+export const EventDataInputBox:FC<ActionData> = ({errors, formDataForRefill}) => {
+  // TODO: use formDataForRefill to refill the form by setting the defaultValue of the input elements. Only needed for users with JavaScript disabled.
 
   const startDateInput = useRef<HTMLInputElement>(null);
   const endDateInput = useRef<HTMLInputElement>(null);
