@@ -4,10 +4,6 @@ import { Form, useActionData, useSearchParams } from '@remix-run/react'
 import type { FC } from 'react'
 import { Box } from '~/components/elementary/Box'
 import { H1 } from '~/components/elementary/H1'
-import { Input } from '~/components/forms/inputs/Input';
-import { InputError } from '~/components/forms/inputs/InputError';
-import { InputWrapper } from '~/components/forms/inputs/InputWrapper';
-import { InputLabel } from '~/components/forms/inputs/InputLabel';
 import { verifyAdminLogin } from '~/models/admin.server';
 import { createAdminSession, getAdminId } from '~/session_admin.server'
 import { safeRedirect, validateEmail } from '~/utils';
@@ -86,7 +82,7 @@ const LoginPage:FC = () => {
 
   return (
     <>
-      <H1>Login as Admin</H1>
+      <H1>Admin Login</H1>
       <Box>
       <Form method="post" className="space-y-6">
         <InputWithLabelAndErrorMessage

@@ -6,6 +6,7 @@
     "build": "run-s build:*",
     "build:css": "npm run generate:css -- --minify",
     "build:remix": "remix build",
+    "db:seed-for-testing": "npx prisma db push --force-reset && npx ts-node --require tsconfig-paths/register prisma/seed.ts for-testing",
     "dev": "run-p dev:*",
     "dev:css": "npm run generate:css -- --watch",
     "dev:remix": "cross-env NODE_ENV=development remix dev",
@@ -40,7 +41,6 @@
     "tiny-invariant": "^1.2.0"
   },
   "devDependencies": {
-    "@faker-js/faker": "^6.3.1",
     "@remix-run/dev": "^1.6.4",
     "@remix-run/eslint-config": "^1.6.4",
     "@testing-library/cypress": "^8.0.3",
@@ -80,6 +80,6 @@
     "node": ">=14"
   },
   "prisma": {
-    "seed": "node --require tsconfig-paths/register prisma/seed.js"
+    "seed": "npx ts-node --require tsconfig-paths/register prisma/seed.ts"
   }
 }
