@@ -1,3 +1,4 @@
+import { getTodayDateString } from '../dates';
 import type { InputValidationSchema } from './validation';
 import { getDateParser, getEndOfDayDateParser, getNumberOrNullParser, getIdentityParser } from './validation/parser_getters';
 import { getDateValidator, getRequireValidator, getOptionalNumberValidator, getOptionalStringValidator, getValidator } from './validation/validator_getters';
@@ -16,6 +17,15 @@ const requireStartDateToBeADate = getDateValidator("Ungültiges Startdatum");
 const requireEndDateToBeADate = getDateValidator("Ungültiges Enddatum");
 const requireSignupStartDateToBeADate = getDateValidator("Ungültiger Anmeldestart");
 const requireSignupEndDateToBeADate = getDateValidator("Ungültiger Anmeldeschluss");
+
+const requireDateToBeTodayOrInFuture = getValidator((value) => {
+  const today = new Date(getTodayDateString());
+  const date = new Date(value as string);
+  if (date < today) {
+    return false;
+  }
+  return true;
+}, 'Das Datum muss in der Zukunft liegen');
 
 
 //TODO: Refactor
@@ -74,11 +84,11 @@ export const newEventFormValidationSchema: InputValidationSchema = [
     parser: getIdentityParser(),
   }, {
     inputName: 'startDate',
-    validators: [ requireStartDate, requireStartDateToBeADate ],
+    validators: [ requireStartDate, requireStartDateToBeADate, requireDateToBeTodayOrInFuture ],
     parser: getDateParser(),
   }, {
     inputName: 'endDate',
-    validators: [ requireEndDate, requireEndDateToBeADate, requireEndDateToBeAfterStartDate ],
+    validators: [ requireEndDate, requireEndDateToBeADate, requireDateToBeTodayOrInFuture, requireEndDateToBeAfterStartDate ],
     parser: getEndOfDayDateParser(),
   }, {
     inputName: 'description',
@@ -86,11 +96,14 @@ export const newEventFormValidationSchema: InputValidationSchema = [
     parser: getIdentityParser(),
   }, {
     inputName: 'signupStartDate',
-    validators: [ requireSignupStartDate, requireSignupStartDateToBeADate, requireSignupStartDateToBeBeforeStartDate ],
+    validators: [
+      requireSignupStartDate, requireSignupStartDateToBeADate, requireDateToBeTodayOrInFuture,
+      requireSignupStartDateToBeBeforeStartDate ],
     parser: getDateParser(),
   }, {
     inputName: 'signupEndDate',
-    validators: [ requireSignupEndDate, requireSignupEndDateToBeADate, requireSignupEndDateToBeBeforeStartDate, requireSignupEndDateToBeAfterSignupStartDate ],
+    validators: [ requireSignupEndDate, requireSignupEndDateToBeADate, requireDateToBeTodayOrInFuture,
+      requireSignupEndDateToBeBeforeStartDate, requireSignupEndDateToBeAfterSignupStartDate ],
     parser: getEndOfDayDateParser(),
   }, {
     inputName: 'participantsLimit',

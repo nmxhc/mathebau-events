@@ -28,7 +28,7 @@ function getDate(date: string | SeedDateArray): Date {
 }
 
 export async function seedEvent(prisma: PrismaClient, event: EventSeedData) {
-  await prisma.event.create({
+  return await prisma.event.create({
     data: {
       name: event.name,
       description: event.description,
@@ -43,8 +43,41 @@ export async function seedEvent(prisma: PrismaClient, event: EventSeedData) {
   });
 }
 
+export async function seedEventAdmin(prisma: PrismaClient, ids: { eventId: string, adminId: string }) {
+  await prisma.eventAdmin.create({
+    data: {
+      event: {
+        connect: {
+          id: ids.eventId,
+        },
+      },
+      admin: {
+        connect: {
+          id: ids.adminId,
+        },
+      },
+    },
+  })
+}
+
+async function getAdminIdByName(prisma: PrismaClient, name:string) {
+  const admin = await prisma.admin.findFirst({
+    where: {
+      name,
+    },
+  });
+  if (!admin) {
+    throw new Error(`Admin with name ${name} not found`);
+  }
+  return admin.id;
+}
+
 export async function seedEvents(prisma: PrismaClient, events: EventSeedData[]) {
   for (const event of events) {
-    await seedEvent(prisma, event);
+    const { id:eventId } = await seedEvent(prisma, event);
+    for (const admin of event.admins || []) {
+      const adminId = await getAdminIdByName(prisma, admin);
+      await seedEventAdmin(prisma, { eventId, adminId });
+    }
   }
 }

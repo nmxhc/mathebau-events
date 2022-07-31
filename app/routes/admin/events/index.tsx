@@ -21,15 +21,21 @@ export default function EventsPage() {
   const { events } = useLoaderData();
   return (
     <>
-      <H1>Deine Aktuellen Events:</H1>
-      {events.filter((event: Event) => new Date() < new Date(event.endDate) ).map((event: Event) => (
-        <AdminEventBox event={event} key={event.id} />
-      ))}
-      <Link to='/admin/events/new' className='flex'>
-        <button className='mx-3 sm:mx-0 mt-5 px-4 py-2 flex-grow bg-lime-600 text-lime-50 rounded-md hover:bg-lime-700 transition duration-200 ease-in-out'><b>Neues Event</b></button>
-      </Link>
-      <H1>Deine Vergangenen Events:</H1>
-      {events.filter((event: Event) => new Date(event.endDate) < new Date()).map((event: Event) => (<AdminEventBox event={event} key={event.id} />))}
+      <div data-cy='upcoming-admin-events' className='space-y-3'>
+        <H1> Deine Aktuellen Events:</H1>
+        {events.filter((event: Event) => new Date() < new Date(event.endDate) ).map((event: Event) => (
+          <AdminEventBox event={event} key={event.id} />
+        ))}
+        <Link to='/admin/events/new'>
+          <button data-cy='new-event-button' className='mx-3 sm:mx-0 mt-3 px-4 py-2 flex-grow bg-lime-600 text-lime-50 rounded-md hover:bg-lime-700 transition duration-200 ease-in-out w-full'><b>Neues Event</b></button>
+        </Link>
+      </div>
+      <div data-cy='past-admin-events' className='space-y-3'>
+        <H1>Deine Vergangenen Events:</H1>
+        {events.filter((event: Event) => new Date(event.endDate) < new Date()).map((event: Event) => (
+          <AdminEventBox event={event} key={event.id} />
+        ))}
+      </div>
     </>  
   )
 }

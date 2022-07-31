@@ -22,6 +22,7 @@ describe('The Admin Login Page', () => {
     cy.get('button[type="submit"]').click()
     cy.url().should('include', '/admin/events')
     cy.contains(seedData.admins[0].name)
+    cy.getCookie('__session_admin').should('exist')
   })
 
   it('redirects you if you are already logged in', ()  => {

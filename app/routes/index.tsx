@@ -18,13 +18,13 @@ export const loader: LoaderFunction = async () => {
 export default function Index() {
   const { upcomingEvents } = useLoaderData();
   return (
-    <>
+    <div data-cy='home-page'>
       <H1>Anstehende Events:</H1>
       <div className='space-y-3' data-cy='upcoming-events'>
         {upcomingEvents.map((event: Event) => (
           <EventBox event={event} key={event.id} />
         ))}
       </div>
-    </>
+    </div>
   );
 }

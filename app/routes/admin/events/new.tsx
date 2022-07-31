@@ -35,9 +35,7 @@ export const action: ActionFunction = async ({ request }) => {
     adminId
   });
 
-  console.log(event);
-
-  return redirect(`/admin/event/${/*event.id*/'1'}`);
+  return redirect(`/admin/events/${event.id}`);
 }
 
 export default function NewEventPage() {
@@ -45,7 +43,7 @@ export default function NewEventPage() {
   const actionData = useActionData() as ActionData;
 
   return (
-    <>
+    <div data-cy='new-event-page'>
       <SplitLeftRight>
         <H1>Erstelle ein neues Event</H1>
         <Link to='/admin/events'><span className='text-blue-300'>Zurück</span></Link>
@@ -63,6 +61,6 @@ export default function NewEventPage() {
         </Box>
       </SpaceY>
       </Form>
-    </>
+    </div>
   )
 }

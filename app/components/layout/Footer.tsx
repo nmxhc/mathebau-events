@@ -14,7 +14,7 @@ export const Footer = () => {
         { admin
           ? (<span>Hi {admin.name}!
             <Form action='/admin-logout' method='post' className=' text-blue-300 inline-block ml-2'>
-              <button type='submit'>Logout</button>
+              <button data-cy='admin-logout-link' type='submit'>Logout</button>
             </Form></span>)
           : (<Link to='/admin-login' className=' text-blue-300' data-cy='admin-login-link'>Admin Login</Link>)}
       </div>
