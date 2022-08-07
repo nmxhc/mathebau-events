@@ -27,7 +27,6 @@ const requireDateToBeTodayOrInFuture = getValidator((value) => {
   return true;
 }, 'Das Datum muss in der Zukunft liegen');
 
-
 //TODO: Refactor
 const requireEndDateToBeAfterStartDate = getValidator((value, formData) => {
   const startDate = formData.get("startDate");
@@ -51,15 +50,15 @@ const requireSignupEndDateToBeAfterSignupStartDate = getValidator((value, formDa
   return true;
 }, "Anmeldeschluss muss nach dem Anmeldestart liegen");
 
-const requireSignupEndDateToBeBeforeStartDate = getValidator((value, formData) => {
+const requireSignupEndDateToBeStrictlyBeforeStartDate = getValidator((value, formData) => {
   const startDate = formData.get("startDate");
   if (typeof startDate === "string") {
     const signupEndDate = value as string;
-    if (new Date(signupEndDate) > new Date(startDate)) {
-      return false;
+    if (new Date(signupEndDate) < new Date(startDate)) {
+      return true;
     }
   }
-  return true;
+  return false;
 }, "Anmeldeschluss muss vor dem Startdatum liegen");
 
 const requireSignupStartDateToBeBeforeStartDate = getValidator((value, formData) => {
@@ -103,7 +102,7 @@ export const newEventFormValidationSchema: InputValidationSchema = [
   }, {
     inputName: 'signupEndDate',
     validators: [ requireSignupEndDate, requireSignupEndDateToBeADate, requireDateToBeTodayOrInFuture,
-      requireSignupEndDateToBeBeforeStartDate, requireSignupEndDateToBeAfterSignupStartDate ],
+      requireSignupEndDateToBeStrictlyBeforeStartDate, requireSignupEndDateToBeAfterSignupStartDate ],
     parser: getEndOfDayDateParser(),
   }, {
     inputName: 'participantsLimit',

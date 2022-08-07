@@ -8,10 +8,7 @@ describe('The Logout Route', () => {
   });
 
   it('logs the user out when requested with POST', () => {
-    cy.login({
-      email: seedData.admins[0].email,
-      password: seedData.admins[0].password
-    });
+    cy.loginCypress();
     cy.request({
       method: 'POST',
       url: '/admin-logout',

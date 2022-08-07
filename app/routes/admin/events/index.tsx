@@ -20,7 +20,7 @@ export const loader: LoaderFunction = async ({ request }) => {
 export default function EventsPage() {
   const { events } = useLoaderData();
   return (
-    <>
+    <div data-cy='admin-events-page'>
       <div data-cy='upcoming-admin-events' className='space-y-3'>
         <H1> Deine Aktuellen Events:</H1>
         {events.filter((event: Event) => new Date() < new Date(event.endDate) ).map((event: Event) => (
@@ -36,6 +36,6 @@ export default function EventsPage() {
           <AdminEventBox event={event} key={event.id} />
         ))}
       </div>
-    </>  
+    </div>  
   )
 }

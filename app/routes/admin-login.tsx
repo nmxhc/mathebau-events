@@ -81,7 +81,7 @@ const LoginPage:FC = () => {
   const actionData = useActionData() as ActionData;
 
   return (
-    <>
+    <div data-cy="admin-login-page">
       <H1>Admin Login</H1>
       <Box>
       <Form method="post" className="space-y-6">
@@ -125,7 +125,7 @@ const LoginPage:FC = () => {
         </div>
       </Form>
       </Box>
-    </>
+    </div>
   )
 }
 

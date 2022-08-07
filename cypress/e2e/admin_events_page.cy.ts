@@ -25,7 +25,7 @@ describe('Admin Events Page', () => {
     cy.getBySel('upcoming-admin-events').getBySel('Zukünftiges-Event-1-box').getBySel('signup-ended-info').should('exist');
     cy.getBySel('upcoming-admin-events').getBySel('Zukünftiges-Event-3-box').getBySel('signup-start-info').should('exist');
     cy.getBySel('past-admin-events').getBySel('Vergangenes-Event-box').getBySel('event-ended-info').should('exist');
-    cy.getBySel('admin-logout-link').click();
+    cy.logout();
     cy.login({
       email: seedData.admins[1].email,
       password: seedData.admins[1].password
