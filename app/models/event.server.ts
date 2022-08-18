@@ -62,3 +62,11 @@ export async function getEventWithAdminDetails(eventId?: Event["id"]) {
     },
   });
 }
+
+export async function deleteEvent(eventId: Event["id"]) {
+  return await prisma.event.delete({
+    where: {
+      id: eventId,
+    },
+  });
+}
