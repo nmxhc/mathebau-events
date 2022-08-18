@@ -47,3 +47,18 @@ export async function createEvent({event, adminId}:createEventArguments) {
     }
   });
 }
+
+export async function getEventWithAdminDetails(eventId?: Event["id"]) {
+  return await prisma.event.findUnique({
+    where: {
+      id: eventId,
+    },
+    include: {
+      eventAdmins: {
+        include: {
+          admin: true,
+        }
+      },
+    },
+  });
+}
