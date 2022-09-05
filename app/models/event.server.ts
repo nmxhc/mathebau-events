@@ -70,3 +70,11 @@ export async function deleteEvent(eventId: Event["id"]) {
     },
   });
 }
+
+export async function getEventById(eventId?: Event["id"]) {
+  return await prisma.event.findUnique({
+    where: {
+      id: eventId,
+    },
+  });
+}

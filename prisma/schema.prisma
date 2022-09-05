@@ -31,7 +31,10 @@ model Participant {
   id    String @id @default(cuid())
   name  String
   email String @unique
-  validatedEmail Boolean @default(false)
+
+  emailValidationToken String  @unique @default(cuid())
+  validatedEmail       Boolean @default(false)
+  dedicatedToOneSignup Boolean @default(true)
 
   signups Signup[]
 }
