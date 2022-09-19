@@ -13,3 +13,14 @@ export function createParticipant(participant: createParticipantArguments) {
     },
   });
 }
+
+export function validateEmailOfParticipant(emailValidationToken?: string) {
+  return prisma.participant.update({
+    where: {
+      emailValidationToken,
+    },
+    data: {
+      validatedEmail: true,
+    },
+  });
+}

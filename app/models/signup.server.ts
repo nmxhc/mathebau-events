@@ -19,3 +19,15 @@ export function signupParticipant({eventId, participantId}: Pick<Signup, 'eventI
     },
   });
 }
+
+export function getSignupById(signupId?: string) {
+  return prisma.signup.findUnique({
+    where: {
+      id: signupId,
+    },
+    include: {
+      event: true,
+      participant: true,
+    }
+  });
+}

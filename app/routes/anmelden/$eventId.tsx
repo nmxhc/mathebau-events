@@ -11,6 +11,7 @@ import { EventInfos } from '~/components/home_page/EventInfos';
 import type { getEventById } from '~/models/event.server';
 import { createParticipant } from '~/models/participant.server';
 import { signupParticipant } from '~/models/signup.server';
+import { sendNewParticipantSignupEmail } from '~/utils/email';
 import { requireEvent } from '~/utils/events';
 import { signupEventFormValidationSchema } from '~/utils/forms/event-signup';
 import type { ActionData} from '~/utils/forms/validation';
@@ -34,6 +35,7 @@ export const action:ActionFunction = async ({ request, params }) => {
     return errorResponse(errors, formDataForRefill);
   }
 
+  //fails if email is already taken
   const participant = await createParticipant({
       name: parsedData.name,
       email: parsedData.email,
@@ -44,6 +46,8 @@ export const action:ActionFunction = async ({ request, params }) => {
     participantId: participant.id,
     eventId: event.id,
   })
+
+  sendNewParticipantSignupEmail(participant, event)
 
   return redirect(`/anmelden/formular-bestaetigung/${signup.id}`);
 }
