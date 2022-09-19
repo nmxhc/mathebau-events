@@ -59,6 +59,11 @@ export async function getEventWithAdminDetails(eventId?: Event["id"]) {
           admin: true,
         }
       },
+      signups: {
+        include: {
+          participant: true,
+        }
+      }
     },
   });
 }

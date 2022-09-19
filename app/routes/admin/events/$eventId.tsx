@@ -14,6 +14,7 @@ import { SpaceY } from '~/components/elementary/SpaceY';
 import { SplitLeftRight } from '~/components/elementary/SplitLeftRight';
 import { deleteEvent, getEventWithAdminDetails } from '~/models/event.server'
 import { requireAdminId } from '~/session_admin.server';
+import { EventSignupTable, handleDownloadCsv } from '~/components/admin/events/EventSignupTable';
 
 type LoaderData = {
   event: NonNullable<Awaited<ReturnType<typeof getEventWithAdminDetails>>>
@@ -92,6 +93,15 @@ const EventDetailsPage = () => {
           <H2>Event Status</H2>
           <p><b>Anmeldungen:</b> XX{event.participantsLimit && `/${event.participantsLimit}`} </p>
           <EventSignupInfo event={event} />
+        </Box>
+        <Box>
+          <SplitLeftRight>
+            <H2>Anmeldungen</H2>
+            <Button color='lime' onClick={() => handleDownloadCsv(event)}>
+              CSV-Export
+            </Button>
+          </SplitLeftRight>
+          <EventSignupTable event={event} />
         </Box>
         <Box>
           <H2>Administratoren</H2>
