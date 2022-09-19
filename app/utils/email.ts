@@ -1,16 +1,15 @@
 import type { Event } from '@prisma/client';
 import nodemailer from "nodemailer";
 import type { createParticipant } from '~/models/participant.server';
-import type { getSignupById, signupParticipant } from '~/models/signup.server';
 
 export function getTransporter() {
   return nodemailer.createTransport({
-    host: "smtp.ethereal.email",
-    port: 587,
+    host: process.env.EMAIL_HOST,
+    port: parseInt(process.env.EMAIL_HOST || "587"),
     secure: false,
     auth: {
-      user: "antonina.bashirian35@ethereal.email",
-      pass: "axm8YbgHtbjnnRwtt5",
+      user: process.env.EMAIL_USER,
+      pass: process.env.EMAIL_PASSWORD,
     },
   });
 }
@@ -21,7 +20,7 @@ export function sendNewParticipantSignupEmail(
 ) {
   const transporter = getTransporter();
   const mailOptions = {
-    from: `"Mathebau Events" <antonina.bashirian35@ethereal.email>`,
+    from: `"Mathebau Events" <${process.env.EMAIL_USER}>`,
     to: participant.email,
     subject: `Anmeldung für ${event.name}`,
     text: `Hallo ${participant.name}, vielen Dank für deine Anmeldung zum Event "${event.name}". Bitte bestätige deine Anmeldung, indem du auf den folgenden Link klickst: ${process.env.BASE_URL}/participant/email-bestaetigung/${participant.emailValidationToken}`,
