@@ -7,12 +7,12 @@ export const EventSignupInfo:FC<{event: Event}> = ({event}) => {
     <>
       { new Date(event.signupStartDate) > new Date() && (
         <p data-cy='signup-start-info' className='text-blue-200'>
-          Anmeldezeitraum beginnt in {moment(event.signupStartDate).diff(moment(), 'days')} Tagen
+          Die Anmeldung beginnt in {moment(event.signupStartDate).diff(moment(), 'days')} Tagen
         </p>
       )}
       { new Date(event.signupStartDate) < new Date() && new Date() < new Date(event.signupEndDate) && (
         <p data-cy='signup-ongoing-info' className='text-lime-200'>
-          Anmeldungen laufen bis zum {moment(event.signupEndDate).format('DD.MM.YYYY')}
+          Anmeldungen sind möglich bis zum {moment(event.signupEndDate).format('DD.MM.YYYY')}
         </p>
       )}
       { new Date(event.signupEndDate) < new Date() && new Date() < new Date(event.startDate) && (

@@ -29,6 +29,13 @@ export function getEndOfDay (date: string) : Date {
   return dateTimePlusMinutes(new Date(dateStringPlusDays(date, 1)),-1)
 }
 
+export function todayIsBetween(start: string | Date, end: string | Date) : boolean {
+  const today = new Date();
+  const startD = new Date(start);
+  const endD = new Date(end);
+  return today > startD && today < endD;
+}
+
 export function dateStringsAreWeaklyOrdered (dates: string[]) : boolean {
   for (let i = 0; i < dates.length - 1; i++) {
     if (new Date(dates[i]) > new Date(dates[i + 1])) {
