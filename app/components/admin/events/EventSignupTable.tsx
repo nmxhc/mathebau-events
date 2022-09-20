@@ -17,7 +17,7 @@ export function getNodes(event: Event) {
       signupTime: s.signupTime,
       validatedEmail: s.participant.validatedEmail
     }
-    for (const sEIV of s.signupEventInputValues) {
+    for (const sEIV of s.signupEventInputValues) { // custom fields
       node[sEIV.eventInputField.inputField.name] = sEIV.value;
     }
     return node
@@ -32,7 +32,7 @@ export const handleDownloadCsv = (event: Event) => {
     { accessor: (item: ArrayElement<Nodes>) => item.email, name: 'Email' },
     { accessor: (item: ArrayElement<Nodes>) => item.signupTime, name: 'Anmeldezeit' },
     { accessor: (item: ArrayElement<Nodes>) => item.validatedEmail, name: 'Email bestätigt' },
-    ...event.eventInputFields.map(eIF => ({
+    ...event.eventInputFields.map(eIF => ({ // custom fields
       accessor: (item: ArrayElement<Nodes>) => item[eIF.inputField.name],
       name: eIF.inputField.name
     }))
@@ -45,7 +45,7 @@ export const EventSignupTable:FC<{event: Event}> = ({event}) => {
   
   const nodes = getNodes(event)
 
-  const theme = useTheme({
+  const theme = useTheme({ // custom fields need an extra 33% width
     Table: `
       --data-table-library_grid-template-columns: 100px 33% 33% ${new Array(event.eventInputFields.length + 1).join(' 33%')} minmax(150px, 1fr);
     `,
@@ -69,7 +69,7 @@ export const EventSignupTable:FC<{event: Event}> = ({event}) => {
               <HeaderCell>Email</HeaderCell>
               <HeaderCell>Anmeldezeit</HeaderCell>
               <HeaderCell>Email bestätigt</HeaderCell>
-              {event.eventInputFields.map(eIF => (
+              {event.eventInputFields.map(eIF => ( // custom fields
                 <HeaderCell key={eIF.id}>{eIF.inputField.name}</HeaderCell>
               ))}
             </HeaderRow>
@@ -89,7 +89,7 @@ export const EventSignupTable:FC<{event: Event}> = ({event}) => {
                     checked={item.validatedEmail}
                     disabled />
                 </Cell>
-                {event.eventInputFields.map(eIF => (
+                {event.eventInputFields.map(eIF => ( // custom fields
                   <Cell key={eIF.id}>{item[eIF.inputField.name]}</Cell>
                 ))}
               </Row>
