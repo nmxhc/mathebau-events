@@ -11,7 +11,7 @@
       "password": "faSfm3zQmYaGTTT"
     }
   ],
-  "inputFieldTypes": ["text", "select", "checkbox"],
+  "inputFieldTypes": ["text", "number", "select", "checkbox"],
   "inputFields": [
     {
       "name": "Lieblingskartoffelzubereitung",
@@ -26,6 +26,16 @@
     {
       "name": "Ich mag Mathematik",
       "type": "checkbox"
+    },
+    {
+      "name": "Alter",
+      "type": "number",
+      "required": true
+    },
+    {
+      "name": "Steckbrief abgegeben",
+      "type": "checkbox",
+      "adminOnly": true
     }
   ],
   "events": [
@@ -68,11 +78,7 @@
       "signupStartDate": [10, "days-ago"],
       "signupEndDate": [9, "days-from-now"],
       "cost": "10 €",
-      "inputFields": [
-        "Lieblingskartoffelzubereitung",
-        "Ich esse...",
-        "Ich mag Mathematik"
-      ],
+      "inputFields": ["Lieblingskartoffelzubereitung", "Alter"],
       "admins": ["Mathestudentin", "Cypress"]
     },
     {

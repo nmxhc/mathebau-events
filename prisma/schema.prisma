@@ -118,7 +118,7 @@ model InputField {
 }
 
 model InputFieldType {
-  name String @unique
+  name String @id
   
   inputFields InputField[]
 }

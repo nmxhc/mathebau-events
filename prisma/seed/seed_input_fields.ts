@@ -6,6 +6,7 @@ export interface InputFieldSeedData {
   name: string;
   type: string;
   required?: boolean;
+  adminOnly?: boolean;
   options?: string[];
 }
 
@@ -33,6 +34,7 @@ export async function seedInputField(prisma: PrismaClient, inputField: InputFiel
         },
       },
       required: inputField.required,
+      adminOnly: inputField.adminOnly,
       options: {
         create: inputField.options?.map((option) => ({ name: option })) || [],
       },

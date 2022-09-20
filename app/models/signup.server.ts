@@ -3,8 +3,17 @@ import { prisma } from '~/db.server';
 
 export type { Signup } from "@prisma/client";
 
-export function signupParticipant({eventId, participantId}: Pick<Signup, 'eventId'|'participantId'>) {
-  return prisma.signup.create({
+export async function signupParticipant({eventId, participantId, customFields}: Pick<Signup, 'eventId'|'participantId'> & {customFields: Record<string, string>}) {
+  const eIFs = await prisma.eventInputField.findMany({
+    where: {
+      eventId,
+    },
+    select: {
+      inputField: true,
+      id: true
+    },
+  });
+  return await prisma.signup.create({
     data: {
       event: {
         connect: {
@@ -16,6 +25,16 @@ export function signupParticipant({eventId, participantId}: Pick<Signup, 'eventI
           id: participantId,
         },
       },
+      signupEventInputValues : {
+        create: eIFs.map((eIF) => ({
+          eventInputField: {
+            connect: {
+              id: eIF.id,
+            },
+          },
+          value: customFields[eIF.inputField.name],
+        })),
+      }
     },
   });
 }

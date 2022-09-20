@@ -16,6 +16,7 @@ import { requireEvent } from '~/utils/events';
 import { signupEventFormValidationSchema } from '~/utils/forms/event-signup';
 import type { ActionData} from '~/utils/forms/validation';
 import { errorResponse, validateAndParseFormData } from '~/utils/forms/validation';
+import { getCustomFieldsValidationSchema } from '~/utils/forms/validation/custom-fields';
 
 type LoaderData = {
   event: NonNullable<Awaited<ReturnType<typeof getEventById>>>
@@ -29,22 +30,28 @@ export const loader:LoaderFunction = async ({ request, params }) => {
 export const action:ActionFunction = async ({ request, params }) => {
   const event = await requireEvent(params.eventId);
   const formData = await request.formData();
-  const { errors, formDataForRefill, parsedData } = validateAndParseFormData(formData, signupEventFormValidationSchema);
+  const customFieldsValidationSchema = getCustomFieldsValidationSchema(event.eventInputFields);
+  const { errors, formDataForRefill, parsedData } = validateAndParseFormData(formData, [...customFieldsValidationSchema, ...signupEventFormValidationSchema]);
 
   if (errors) {
+    console.log(errors)
     return errorResponse(errors, formDataForRefill);
   }
 
-  //fails if email is already taken
+  const { name, email, ...customFields } = parsedData;
+
+  //fails if email is already taken, TODO catch error
   const participant = await createParticipant({
-      name: parsedData.name,
-      email: parsedData.email,
+      name,
+      email,
       dedicatedToOneSignup: true
   });
 
+  //TODO catch errors and delete participant if signup fails
   const signup = await signupParticipant({
     participantId: participant.id,
     eventId: event.id,
+    customFields
   })
 
   sendNewParticipantSignupEmail(participant, event)
@@ -79,6 +86,19 @@ const EventSignupPage = () => {
               invalid={actionData?.errors?.email !== undefined}
               errorMessage={actionData?.errors?.email}
             />
+            {event.eventInputFields.map((eIF) => (
+              <div key={eIF.id}>
+                {(eIF.inputField.typeId === 'text' || eIF.inputField.typeId === 'number') && (
+                  <InputWithLabelAndErrorMessage
+                    label={eIF.inputField.name}
+                    name={eIF.inputField.name}
+                    type={eIF.inputField.typeId}
+                    invalid={actionData?.errors?.[eIF.inputField.name] !== undefined}
+                    errorMessage={actionData?.errors?.[eIF.inputField.name]}
+                  />
+                )}
+              </div>
+            ))}
             <SubmitButton>Anmelden</SubmitButton>
           </Form>
         </Box>

@@ -62,6 +62,20 @@ export async function getEventWithAdminDetails(eventId?: Event["id"]) {
       signups: {
         include: {
           participant: true,
+          signupEventInputValues: {
+            include: {
+              eventInputField: {
+                include: {
+                  inputField: true,
+                }
+              },
+            }
+          }
+        }
+      },
+      eventInputFields: {
+        include: {
+          inputField: true,
         }
       }
     },
@@ -81,5 +95,16 @@ export async function getEventById(eventId?: Event["id"]) {
     where: {
       id: eventId,
     },
+    include: {
+      eventInputFields: {
+        include: {
+          inputField: {
+            include: {
+              options: true,
+            },
+          }
+        }
+      },
+    }
   });
 }
