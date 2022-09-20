@@ -110,6 +110,7 @@ model InputField {
   name              String
   type              InputFieldType @relation(fields: [typeId], references: [name], onDelete: Cascade, onUpdate: Cascade)
   required          Boolean @default(false)
+  adminOnly         Boolean @default(false)
   options           Option[] // only for InputFieldType.Select
   
   eventInputFields  EventInputField[]
@@ -123,10 +124,10 @@ model InputFieldType {
 }
 
 model Option {
-  id         String @unique @default(cuid())
+  id         String @id @default(cuid())
   name       String
   inputField InputField @relation(fields: [inputFieldId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   
   inputFieldId String
-  @@id([name, inputFieldId])
+  @@unique([name, inputFieldId])
 }

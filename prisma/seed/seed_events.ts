@@ -16,6 +16,7 @@ export interface EventSeedData {
   signupEndDate: string | SeedDateArray;
   participantsLimit?: number;
   cost?: string;
+  inputFields?: string[];
   admins?: string[];
 }
 
@@ -72,9 +73,42 @@ async function getAdminIdByName(prisma: PrismaClient, name:string) {
   return admin.id;
 }
 
+export async function seedEventInputField(prisma: PrismaClient, ids: { eventId: string, inputFieldId: string }) {
+  await prisma.eventInputField.create({
+    data: {
+      event: {
+        connect: {
+          id: ids.eventId,
+        },
+      },
+      inputField: {
+        connect: {
+          id: ids.inputFieldId,
+        },
+      },
+    },
+  })
+}
+
+async function getInputFieldIdByName(prisma: PrismaClient, name:string) {
+  const inputField = await prisma.inputField.findFirst({
+    where: {
+      name,
+    },
+  });
+  if (!inputField) {
+    throw new Error(`Input field with name ${name} not found`);
+  }
+  return inputField.id;
+}
+
 export async function seedEvents(prisma: PrismaClient, events: EventSeedData[]) {
   for (const event of events) {
     const { id:eventId } = await seedEvent(prisma, event);
+    for (const inputField of event.inputFields || []) {
+      const inputFieldId = await getInputFieldIdByName(prisma, inputField);
+      await seedEventInputField(prisma, { eventId, inputFieldId });
+    }
     for (const admin of event.admins || []) {
       const adminId = await getAdminIdByName(prisma, admin);
       await seedEventAdmin(prisma, { eventId, adminId });

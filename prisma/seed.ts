@@ -4,17 +4,23 @@ import type { AdminSeedData} from "./seed/seed_admins";
 import { seedAdmins } from "./seed/seed_admins";
 import type { EventSeedData} from "./seed/seed_events";
 import { seedEvents } from "./seed/seed_events";
+import type { InputFieldSeedData, InputFieldTypeSeedData} from './seed/seed_input_fields';
+import { seedInputFields, seedInputFieldTypes } from './seed/seed_input_fields';
 
 interface SeedData {
   admins: AdminSeedData[];
+  inputFieldTypes: InputFieldTypeSeedData[];
+  inputFields: InputFieldSeedData[];
   events: EventSeedData[];
 }
 
 const prisma = new PrismaClient();
 
 async function seedData(data: SeedData) {
-  const { admins, events } = data;
+  const { admins, inputFieldTypes, inputFields, events } = data;
   await seedAdmins(prisma, admins);
+  await seedInputFieldTypes(prisma, inputFieldTypes);
+  await seedInputFields(prisma, inputFields);
   await seedEvents(prisma, events);
 }
 

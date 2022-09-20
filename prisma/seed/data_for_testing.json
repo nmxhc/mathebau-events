@@ -11,6 +11,23 @@
       "password": "faSfm3zQmYaGTTT"
     }
   ],
+  "inputFieldTypes": ["text", "select", "checkbox"],
+  "inputFields": [
+    {
+      "name": "Lieblingskartoffelzubereitung",
+      "type": "text"
+    },
+    {
+      "name": "Ich esse...",
+      "type": "select",
+      "required": true,
+      "options": ["Vegan", "Vegetarisch", "Kein Gluten", "Alles"]
+    },
+    {
+      "name": "Ich mag Mathematik",
+      "type": "checkbox"
+    }
+  ],
   "events": [
     {
       "name": "Vergangenes Event",
@@ -51,7 +68,12 @@
       "signupStartDate": [10, "days-ago"],
       "signupEndDate": [9, "days-from-now"],
       "cost": "10 €",
-      "admins": ["Mathestudentin"]
+      "inputFields": [
+        "Lieblingskartoffelzubereitung",
+        "Ich esse...",
+        "Ich mag Mathematik"
+      ],
+      "admins": ["Mathestudentin", "Cypress"]
     },
     {
       "name": "Zukünftiges Event 3",
