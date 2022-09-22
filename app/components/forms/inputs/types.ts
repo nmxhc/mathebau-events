@@ -6,4 +6,5 @@ export interface UserInputComponentProps<InputElementType> {
   defaultValue?: string;
   invalid?: boolean;
   onChange?: ChangeEventHandler<InputElementType>;
+  className?: string;
 }

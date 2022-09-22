@@ -2,6 +2,7 @@ import type {FC} from 'react'
 import type { UserInputComponentProps } from './types';
 
 export interface SelectProps extends UserInputComponentProps<HTMLSelectElement> {
+  
 }
 
 export const Select:FC<SelectProps> = ({
@@ -11,6 +12,7 @@ export const Select:FC<SelectProps> = ({
   defaultValue,
   onChange,
   invalid,
+  className,
 }) => {
   return (
     <select
@@ -22,7 +24,7 @@ export const Select:FC<SelectProps> = ({
       autoComplete={name}
       aria-invalid={invalid}
       aria-describedby={`${name}-error`}
-      className="w-full rounded border border-stone-500 px-2 py-1 text-lg text-stone-700"
+      className={`w-full rounded border border-stone-500 px-2 py-1 text-lg text-stone-700 ${className}`}
     >
       {children}
     </select>
