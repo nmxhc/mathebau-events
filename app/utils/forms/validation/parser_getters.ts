@@ -22,3 +22,7 @@ export function getDateParser () {
 export function getEndOfDayDateParser () {
   return getParser(value => getEndOfDay(value as string));
 }
+
+export function getCheckboxToStringParser () {
+  return getParser(value => value ? 'true' : 'false');
+}

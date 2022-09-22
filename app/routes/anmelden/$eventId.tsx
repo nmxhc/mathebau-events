@@ -5,7 +5,9 @@ import { json } from '@remix-run/server-runtime';
 import { Box } from '~/components/elementary/Box';
 import { H1 } from '~/components/elementary/H1';
 import { SpaceY } from '~/components/elementary/SpaceY';
+import { CheckboxWithLabel } from '~/components/forms/CheckboxWithLabel';
 import { InputWithLabelAndErrorMessage } from '~/components/forms/InputWithLabelAndErrorMessage';
+import { SelectWithLabelAndErrorMessage } from '~/components/forms/SelectWithLabelAndErrorMessage';
 import { SubmitButton } from '~/components/forms/SubmitButton';
 import { EventInfos } from '~/components/home_page/EventInfos';
 import type { getEventById } from '~/models/event.server';
@@ -95,6 +97,26 @@ const EventSignupPage = () => {
                     type={eIF.inputField.typeId}
                     invalid={actionData?.errors?.[eIF.inputField.name] !== undefined}
                     errorMessage={actionData?.errors?.[eIF.inputField.name]}
+                  />
+                )}
+                {eIF.inputField.typeId === 'select' && (
+                  <SelectWithLabelAndErrorMessage
+                    label={eIF.inputField.name}
+                    name={eIF.inputField.name}
+                    invalid={actionData?.errors?.[eIF.inputField.name] !== undefined}
+                    errorMessage={actionData?.errors?.[eIF.inputField.name]}
+                  >
+                    {eIF.inputField.options.map((option) => (
+                      <option key={option.id} value={option.name}>
+                        {option.name}
+                      </option>
+                    ))}
+                  </SelectWithLabelAndErrorMessage>
+                )}
+                {eIF.inputField.typeId === 'checkbox' && (
+                  <CheckboxWithLabel
+                    label={eIF.inputField.name}
+                    name={eIF.inputField.name}
                   />
                 )}
               </div>

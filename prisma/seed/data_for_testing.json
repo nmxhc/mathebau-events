@@ -78,7 +78,12 @@
       "signupStartDate": [10, "days-ago"],
       "signupEndDate": [9, "days-from-now"],
       "cost": "10 €",
-      "inputFields": ["Lieblingskartoffelzubereitung", "Alter"],
+      "inputFields": [
+        "Lieblingskartoffelzubereitung",
+        "Alter",
+        "Ich esse...",
+        "Ich mag Mathematik"
+      ],
       "admins": ["Mathestudentin", "Cypress"]
     },
     {
