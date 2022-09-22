@@ -39,8 +39,8 @@ export async function signupParticipant({eventId, participantId, customFields}: 
   });
 }
 
-export function getSignupById(signupId?: string) {
-  return prisma.signup.findUnique({
+export async function getSignupById(signupId?: string) {
+  return await prisma.signup.findUnique({
     where: {
       id: signupId,
     },
@@ -49,4 +49,29 @@ export function getSignupById(signupId?: string) {
       participant: true,
     }
   });
+}
+
+export async function deleteSinupById(signupId?: string) {
+  const signup = await prisma.signup.findUnique({
+    where: {
+      id: signupId,
+    },
+    select: {
+      participant: true
+    }
+  });
+  if (signup?.participant.dedicatedToOneSignup) {
+    await prisma.participant.delete({
+      where: {
+        id: signup.participant.id,
+      }
+    }); // cascade-deletes the signup
+  } else {
+    await prisma.signup.delete({
+      where: {
+        id: signupId,
+      }
+    });
+  }
+  return signup;
 }

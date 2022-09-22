@@ -24,3 +24,22 @@ export function validateEmailOfParticipant(emailValidationToken?: string) {
     },
   });
 }
+
+export function unvalidateEmailOfParticipant(emailValidationToken?: string) {
+  return prisma.participant.update({
+    where: {
+      emailValidationToken,
+    },
+    data: {
+      validatedEmail: false,
+    },
+  });
+}
+
+export function deleteParticipantById(participantId?: string) {
+  return prisma.participant.delete({
+    where: {
+      id: participantId,
+    },
+  });
+}

@@ -15,6 +15,8 @@ import { SplitLeftRight } from '~/components/elementary/SplitLeftRight';
 import { deleteEvent, getEventWithAdminDetails } from '~/models/event.server'
 import { requireAdminId } from '~/session_admin.server';
 import { EventSignupTable, handleDownloadCsv } from '~/components/admin/events/EventSignupTable';
+import { unvalidateEmailOfParticipant, validateEmailOfParticipant } from '~/models/participant.server';
+import { deleteSinupById } from '~/models/signup.server';
 
 type LoaderData = {
   event: NonNullable<Awaited<ReturnType<typeof getEventWithAdminDetails>>>
@@ -50,13 +52,36 @@ export const action:ActionFunction = async ({ request, params }) => {
   }
 
   if (event.eventAdmins.findIndex(ea => ea.adminId === adminId) === -1) {
-    throw new Response("Unauthorized to delete Event", {
+    throw new Response("Unauthorized", {
       status: 401,
     })
   }
 
-  await deleteEvent(event.id)
-  return redirect(`/admin/events`)
+  const formData = await request.formData();
+  const action = formData.get('action');
+
+  if (action === 'delete-event') {
+    await deleteEvent(event.id)
+    return redirect(`/admin/events`)
+  }
+
+  if (action === 'update-email-validation') {
+    const signupId = formData.get('signupId');
+    const validatedEmail = formData.has('validatedEmail');
+    const emailValidationToken = event.signups.find(s => s.id === signupId)?.participant.emailValidationToken;
+    if (validatedEmail) {
+      await validateEmailOfParticipant(emailValidationToken)
+    } else {
+      await unvalidateEmailOfParticipant(emailValidationToken)
+    }
+  }
+
+  if (action === 'delete-signup') {
+    const signupId = formData.get('signupId') as string;
+    await deleteSinupById(signupId);
+  }
+
+  return redirect(`/admin/events/${event.id}`)
 }
 
 const EventDetailsPage = () => {
@@ -130,6 +155,7 @@ const EventDetailsPage = () => {
               <Button dataCy='delete-event-modal-confirm-button' color='red' type='submit'>
                 Löschen
               </Button>
+              <input type='hidden' name='action' value='delete-event' />
             </Form>
           </div>
         </div>

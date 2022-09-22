@@ -5,6 +5,7 @@ import { useTheme } from '@table-library/react-table-library/theme';
 import type { getEventWithAdminDetails } from '~/models/event.server';
 import type { ArrayElement } from '~/utils';
 import { downloadAsCsv} from '~/utils/csv-export'
+import { Form, useSubmit } from '@remix-run/react';
 
 type Event = NonNullable<Awaited<ReturnType<typeof getEventWithAdminDetails>>>
 
@@ -43,19 +44,22 @@ export const handleDownloadCsv = (event: Event) => {
 
 export const EventSignupTable:FC<{event: Event}> = ({event}) => {
   
+  const submit = useSubmit()
   const nodes = getNodes(event)
 
   const theme = useTheme({ // custom fields need an extra 33% width
     Table: `
-      --data-table-library_grid-template-columns: 100px 33% 33% ${new Array(event.eventInputFields.length + 1).join(' 33%')} minmax(150px, 1fr);
+      --data-table-library_grid-template-columns: 100px 33% 140px 100px ${new Array(event.eventInputFields.length + 1).join(' 150px')} minmax(90px, 1fr);
     `,
     BaseCell: `
       &:nth-of-type(1) {
         left: 0px;
         z-index: 1;
       }
-    `
+    `,
   });
+
+
 
   const data = {nodes};
 
@@ -72,6 +76,7 @@ export const EventSignupTable:FC<{event: Event}> = ({event}) => {
               {event.eventInputFields.map(eIF => ( // custom fields
                 <HeaderCell key={eIF.id}>{eIF.inputField.name}</HeaderCell>
               ))}
+              <HeaderCell className='z-50'>Löschen</HeaderCell>
             </HeaderRow>
           </Header>
 
@@ -84,14 +89,32 @@ export const EventSignupTable:FC<{event: Event}> = ({event}) => {
                   {moment(item.signupTime).format('DD.MM.YY HH:mm')}
                 </Cell>
                 <Cell>
-                  <input
-                    type='checkbox'
-                    checked={item.validatedEmail}
-                    disabled />
+                  <Form method='post' onChange={(e) => {submit(e.currentTarget)}}>
+                    <input
+                      type='checkbox'
+                      defaultChecked={item.validatedEmail}
+                      name='validatedEmail'
+                      value='true'
+                    />
+                    <input type='hidden' name='action' value='update-email-validation' />
+                    <input type='hidden' name='signupId' value={item.id} />
+                  </Form>
                 </Cell>
                 {event.eventInputFields.map(eIF => ( // custom fields
                   <Cell key={eIF.id}>{item[eIF.inputField.name]}</Cell>
                 ))}
+                <Cell pinRight>
+                  <Form method='post'>
+                    <button
+                      className='text-red-500'
+                      type='submit'
+                    >
+                      Löschen
+                    </button>
+                    <input type='hidden' name='action' value='delete-signup' />
+                    <input type='hidden' name='signupId' value={item.id} />
+                  </Form>
+                </Cell>
               </Row>
             ))}
           </Body>
