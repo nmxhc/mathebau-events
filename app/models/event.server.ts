@@ -11,7 +11,7 @@ export function getUpcomingEvents() {
         gte: new Date(),
       }
     },
-    orderBy: { startDate: "asc" },
+    orderBy: { startDate: "desc" },
   });
 }
 
@@ -32,10 +32,11 @@ export type createEventArguments = {
   event: Pick<
     Event, 'name'|'description'|'location'|'startDate'|'endDate'|'signupStartDate'|'signupEndDate'|'participantsLimit'|'cost'
   >,
+  customFieldIds: string[],
   adminId: Admin["id"],
 }
 
-export async function createEvent({event, adminId}:createEventArguments) {
+export async function createEvent({event, adminId, customFieldIds}:createEventArguments) {
   return await prisma.event.create({
     data: {
       ...event,
@@ -43,6 +44,11 @@ export async function createEvent({event, adminId}:createEventArguments) {
         create: {
           adminId
         }
+      },
+      eventInputFields: {
+        create: customFieldIds.map((id) => ({
+          inputFieldId: id,
+        })),
       }
     }
   });

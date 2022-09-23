@@ -36,7 +36,6 @@ export const action:ActionFunction = async ({ request, params }) => {
   const { errors, formDataForRefill, parsedData } = validateAndParseFormData(formData, [...customFieldsValidationSchema, ...signupEventFormValidationSchema]);
 
   if (errors) {
-    console.log(errors)
     return errorResponse(errors, formDataForRefill);
   }
 
