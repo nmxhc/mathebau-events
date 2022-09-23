@@ -1,4 +1,5 @@
 import type { FC } from 'react';
+import { SubBox } from '~/components/elementary/SubBox';
 import type { CustomField } from '~/routes/admin/events/new';
 
 const labelOfFieldIds = {
@@ -13,7 +14,7 @@ export const SelectedCustomFields:FC<{customFields:CustomField[], removeField:(f
     <div className='mt-3 space-y-5'>
       <input type='hidden' name='selected-custom-fields' value={JSON.stringify(customFields.map((cF) => cF.id))} />
       {customFields.map(field => (
-        <div key={field.id} className='px-4 py-2 bg-stone-700 text-white rounded-md'>
+        <SubBox key={field.id}>
           <div className='flex justify-between'>
             <div><b>{field.name}</b></div>
             <button
@@ -42,7 +43,7 @@ export const SelectedCustomFields:FC<{customFields:CustomField[], removeField:(f
               </>
             )}
           </div>
-      </div>
+      </SubBox>
       ))}
     </div>
   )

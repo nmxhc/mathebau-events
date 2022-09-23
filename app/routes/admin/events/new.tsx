@@ -1,7 +1,7 @@
 import type { ActionFunction, LoaderFunction} from '@remix-run/node';
 import { redirect } from '@remix-run/node';
 import { json } from '@remix-run/node';
-import { Form, Link, Outlet, useActionData, useLoaderData } from '@remix-run/react';
+import { Form, Link, Outlet, ScrollRestoration, useActionData, useLoaderData } from '@remix-run/react';
 import { Box } from '~/components/elementary/Box';
 import { H1 } from '~/components/elementary/H1';
 import { requireAdminId } from '~/session_admin.server';
@@ -62,9 +62,23 @@ export default function NewEventPage() {
 
   const [customFields, setCustomFields] = useState<CustomField[]>([]);
   const addFieldSelectElementRef = useRef<HTMLSelectElement>(null);
+  const linkToCreateCustomFieldRef = useRef<HTMLAnchorElement>(null);
+
+  const handleCustomFieldSelectionChange = (value: string) => {
+    addFieldSelectElementRef.current!.value = 'add-field';
+    if (value === 'add-field') {
+      return;
+    }
+
+    if (value === 'create-new-field') {
+      linkToCreateCustomFieldRef.current!.click();
+      return;
+    }
+
+    addField(value);
+  }
 
   const addField = (fieldId: string) => {
-    addFieldSelectElementRef.current!.value = 'add-field';
     const field = availableCustomFields.find(field => field.id === fieldId);
     if (field) {
       setCustomFields([...customFields, field]);
@@ -98,12 +112,12 @@ export default function NewEventPage() {
           <CustomFieldSelection
             availableCustomFields={availableCustomFields}
             customFields={customFields}
-            addField={addField}
+            onChange={handleCustomFieldSelectionChange}
             addFieldSelectElementRef={addFieldSelectElementRef} />
+          {/* eslint-disable-next-line jsx-a11y/anchor-has-content */}
+          <Link to='/admin/events/new/create-custom-field' ref={linkToCreateCustomFieldRef}></Link>
+          <Outlet />
         </Box>
-
-        {/* for Create New Input Field */}
-        <Outlet />
 
         <Box>
           <SubmitButton>Create Event</SubmitButton>

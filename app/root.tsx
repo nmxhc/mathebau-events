@@ -10,7 +10,6 @@ import {
   Meta,
   Outlet,
   Scripts,
-  ScrollRestoration,
 } from "@remix-run/react";
 
 import tailwindStylesheetUrl from "./styles/tailwind.css";
@@ -48,7 +47,6 @@ export default function App() {
         <Layout>
           <Outlet />
         </Layout>
-        <ScrollRestoration />
         <Scripts />
         <LiveReload />
       </body>
