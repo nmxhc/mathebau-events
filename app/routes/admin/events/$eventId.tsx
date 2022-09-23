@@ -1,9 +1,8 @@
-import { Form, useCatch, useLoaderData } from '@remix-run/react';
+import { useCatch, useLoaderData } from '@remix-run/react';
 import type { ActionFunction, LoaderFunction} from '@remix-run/server-runtime';
 import { redirect } from '@remix-run/server-runtime';
 import { json } from '@remix-run/server-runtime'
 import moment from 'moment';
-import type { MouseEventHandler} from 'react';
 import { useRef } from 'react';
 import { EventSignupInfo } from '~/components/admin/events/EventSignupInfo';
 import { Box } from '~/components/elementary/Box';
@@ -17,6 +16,8 @@ import { requireAdminId } from '~/session_admin.server';
 import { EventSignupTable, handleDownloadCsv } from '~/components/admin/events/EventSignupTable';
 import { unvalidateEmailOfParticipant, validateEmailOfParticipant } from '~/models/participant.server';
 import { deleteSinupById } from '~/models/signup.server';
+import type { DeleteEventModalHandle } from '~/components/admin/events/event/DeleteEventModal';
+import { DeleteEventModal } from '~/components/admin/events/event/DeleteEventModal';
 
 type LoaderData = {
   event: NonNullable<Awaited<ReturnType<typeof getEventWithAdminDetails>>>
@@ -86,20 +87,13 @@ export const action:ActionFunction = async ({ request, params }) => {
 
 const EventDetailsPage = () => {
   const { event } = useLoaderData() as LoaderData;
-  const modal = useRef<HTMLDivElement>(null);
-
-  const toggleModal:MouseEventHandler = (e) => {
-    if (modal.current) {
-      modal.current.classList.toggle('hidden')
-      modal.current.classList.toggle('flex')
-    }
-  }
+  const deleteModalRef = useRef<DeleteEventModalHandle>(null);
 
   return (
     <div data-cy='admin-event-page'>
       <SplitLeftRight>
         <H1>{event.name}</H1>
-        <Button dataCy='delete-event-button' color='red' className='mb-3' onClick={toggleModal}>  
+        <Button dataCy='delete-event-button' color='red' className='mb-3' onClick={() => deleteModalRef.current?.toggleModal()}>  
           Event Löschen
         </Button>
       </SplitLeftRight>
@@ -136,30 +130,7 @@ const EventDetailsPage = () => {
         </Box>
       </SpaceY>
 
-      <div data-cy='delete-event-modal' ref={modal} className='hidden fixed inset-0 bg-black bg-opacity-70 justify-center items-center'>
-        <div className='bg-stone-900 px-5 py-3 rounded-lg max-w-sm'>
-          <div className='flex justify-between items-center mb-3'>
-            <h4 className='text-red-400 text-2xl'>Bestätige Löschen?</h4>
-            <svg data-cy='delete-event-modal-close-button' xmlns="http://www.w3.org/2000/svg" className="h-10 w-10 p-2 cursor-pointer hover:bg-stone-800 rounded-lg transition duration-200 ease-in-out" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2} onClick={toggleModal}>
-              <path strokeLinecap="round" strokeLinejoin="round" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
-            </svg>
-          </div>
-          <div className='mb-3'>
-            <p>Bist du sicher, dass du <i>"{event.name}"</i> unwiederruflich löschen möchtest?"</p>
-          </div>
-          <div className='flex justify-end items-center'>
-            <Button dataCy='delete-event-modal-cancel-button' color='stone' className='mr-3' onClick={toggleModal}>
-              Abbrechen
-            </Button>
-            <Form method='post'>
-              <Button dataCy='delete-event-modal-confirm-button' color='red' type='submit'>
-                Löschen
-              </Button>
-              <input type='hidden' name='action' value='delete-event' />
-            </Form>
-          </div>
-        </div>
-      </div>
+      <DeleteEventModal eventName={event.name} ref={deleteModalRef} />
     </div>
   )
 }

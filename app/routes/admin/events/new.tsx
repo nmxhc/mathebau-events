@@ -1,7 +1,7 @@
 import type { ActionFunction, LoaderFunction} from '@remix-run/node';
 import { redirect } from '@remix-run/node';
 import { json } from '@remix-run/node';
-import { Form, Link, useActionData, useLoaderData } from '@remix-run/react';
+import { Form, Link, Outlet, useActionData, useLoaderData } from '@remix-run/react';
 import { Box } from '~/components/elementary/Box';
 import { H1 } from '~/components/elementary/H1';
 import { requireAdminId } from '~/session_admin.server';
@@ -101,6 +101,9 @@ export default function NewEventPage() {
             addField={addField}
             addFieldSelectElementRef={addFieldSelectElementRef} />
         </Box>
+
+        {/* for Create New Input Field */}
+        <Outlet />
 
         <Box>
           <SubmitButton>Create Event</SubmitButton>
