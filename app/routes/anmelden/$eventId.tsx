@@ -41,7 +41,7 @@ export const action:ActionFunction = async ({ request, params }) => {
 
   const { name, email, ...customFields } = parsedData;
 
-  //fails if email is already taken, TODO catch error
+  // TODO catch error
   const participant = await createParticipant({
       name,
       email,

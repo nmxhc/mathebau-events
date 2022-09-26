@@ -11,7 +11,7 @@ export function getUpcomingEvents() {
         gte: new Date(),
       }
     },
-    orderBy: { startDate: "desc" },
+    orderBy: { startDate: "asc" },
   });
 }
 

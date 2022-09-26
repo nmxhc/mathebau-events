@@ -1,5 +1,3 @@
-import { H2 } from '~/components/elementary/H2'
-import { SubBox } from '~/components/elementary/SubBox'
 
 const CreateCustomFieldsModal = () => {
 
