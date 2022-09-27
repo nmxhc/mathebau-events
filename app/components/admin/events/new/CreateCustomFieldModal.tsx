@@ -40,7 +40,7 @@ export const CreateCustomFieldModal = forwardRef((props, ref) => {
   }
 
   return (
-    <div data-cy='create-custom-fields-modal' className='flex fixed inset-0 bg-black bg-opacity-70 justify-center items-center' ref={modal}>
+    <div data-cy='create-custom-fields-modal' className='hidden fixed inset-0 bg-black bg-opacity-70 justify-center items-center' ref={modal}>
       <div className='bg-stone-900 px-5 py-3 rounded-lg max-w-md'>
         <div className='flex justify-between items-center mb-3'>
           <h4 className='text-lime-400 text-2xl'>Neues Abfragefeld Erstellen</h4>

@@ -1,7 +1,7 @@
 import type { ActionFunction, LoaderFunction} from '@remix-run/node';
 import { redirect } from '@remix-run/node';
 import { json } from '@remix-run/node';
-import { Form, Link, useActionData, useLoaderData } from '@remix-run/react';
+import { Form, Link, useActionData, useLoaderData, useSearchParams } from '@remix-run/react';
 import { Box } from '~/components/elementary/Box';
 import { H1 } from '~/components/elementary/H1';
 import { requireAdminId } from '~/session_admin.server';
@@ -62,13 +62,13 @@ export const action: ActionFunction = async ({ request }) => {
     const type = formData.get('field-type') as string
     const options = (formData.get('select-options') as string|null )?.split(',').map(s => s.trim()).filter(s => s.length > 0)
 
-    await createCustomField({
+    const customField = await createCustomField({
       name,
       type,
       options,
     }) //todo: add this to the list of custom fields
 
-    return redirect(`/admin/events/new`)
+    return redirect(`/admin/events/new?created-custom-field=${customField.id}`)
   }
 }
 
@@ -76,9 +76,19 @@ export const action: ActionFunction = async ({ request }) => {
 export default function NewEventPage() {
 
   const actionData = useActionData() as ActionData;
+  const [searchParams] = useSearchParams();
+  const createdCustomFieldId = searchParams.get('created-custom-field');
   const { availableCustomFields } = useLoaderData() as LoaderData;
 
   const [customFields, setCustomFields] = useState<CustomField[]>([]);
+  if (createdCustomFieldId) {
+    const createdCustomField = availableCustomFields.find(c => c.id === createdCustomFieldId);
+    if (createdCustomField) {
+      if (!customFields.find(c => c.id === createdCustomFieldId)) {
+        setCustomFields([...customFields, createdCustomField]);
+      }
+    }
+  }
   const addFieldSelectElementRef = useRef<HTMLSelectElement>(null);
   const createCustomModalRef = useRef<CreateCustomFieldModalHandle>(null);
 
