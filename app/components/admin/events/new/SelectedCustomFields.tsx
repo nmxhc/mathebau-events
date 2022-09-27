@@ -2,7 +2,7 @@ import type { FC } from 'react';
 import { SubBox } from '~/components/elementary/SubBox';
 import type { CustomField } from '~/routes/admin/events/new';
 
-const labelOfFieldIds = {
+export const labelOfFieldIds = {
   text: 'Textfeld',
   number: 'Zahlenfeld',
   select: 'Auswahlfeld',

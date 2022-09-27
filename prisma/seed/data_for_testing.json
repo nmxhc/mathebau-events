@@ -18,7 +18,7 @@
       "type": "text"
     },
     {
-      "name": "Ich esse...",
+      "name": "Ich esse ...",
       "type": "select",
       "required": true,
       "options": ["Vegan", "Vegetarisch", "Kein Gluten", "Alles"]
@@ -81,7 +81,7 @@
       "inputFields": [
         "Lieblingskartoffelzubereitung",
         "Alter",
-        "Ich esse...",
+        "Ich esse ...",
         "Ich mag Mathematik"
       ],
       "admins": ["Mathestudentin", "Cypress"]

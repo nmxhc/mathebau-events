@@ -12,3 +12,24 @@ export async function getCustomFields() {
     }
   });
 }
+
+export async function createCustomField({ name, type, options }: { name: string, type: string, options?: string[] }) {
+  return await prisma.inputField.create({
+    data: {
+      name,
+      type: {
+        connect: {
+          name: type,
+        },
+      },
+      options: {
+        create: options?.map((option) => ({ name: option })) || [],
+      },
+    },
+  });
+}
+
+
+export async function getCustomFieldTypes() {
+  return await prisma.inputFieldType.findMany();
+}

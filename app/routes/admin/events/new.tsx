@@ -1,7 +1,7 @@
 import type { ActionFunction, LoaderFunction} from '@remix-run/node';
 import { redirect } from '@remix-run/node';
 import { json } from '@remix-run/node';
-import { Form, Link, Outlet, ScrollRestoration, useActionData, useLoaderData } from '@remix-run/react';
+import { Form, Link, useActionData, useLoaderData } from '@remix-run/react';
 import { Box } from '~/components/elementary/Box';
 import { H1 } from '~/components/elementary/H1';
 import { requireAdminId } from '~/session_admin.server';
@@ -17,10 +17,12 @@ import type { createEventArguments } from '~/models/event.server';
 import { createEvent } from '~/models/event.server';
 import { H2 } from '~/components/elementary/H2';
 import { useRef, useState } from 'react';
-import { getCustomFields } from '~/models/custom-fields.server';
+import { createCustomField, getCustomFields } from '~/models/custom-fields.server';
 import type { ArrayElement } from '~/utils';
 import { SelectedCustomFields } from '~/components/admin/events/new/SelectedCustomFields';
 import { CustomFieldSelection } from '~/components/admin/events/new/CustomFieldSelection';
+import type { CreateCustomFieldModalHandle } from '~/components/admin/events/new/CreateCustomFieldModal';
+import { CreateCustomFieldModal } from '~/components/admin/events/new/CreateCustomFieldModal';
 
 export type CustomField = ArrayElement<NonNullable<Awaited<ReturnType<typeof getCustomFields>>>>
 
@@ -37,21 +39,37 @@ export const loader: LoaderFunction = async ({ request }) => {
 export const action: ActionFunction = async ({ request }) => {
   const adminId = await requireAdminId(request);
   const formData = await request.formData();
-  const { errors, formDataForRefill, parsedData } = validateAndParseFormData(formData, newEventFormValidationSchema);
+  const action = formData.get('action') as string;
+  if (action === 'create-event') {  
+    const { errors, formDataForRefill, parsedData } = validateAndParseFormData(formData, newEventFormValidationSchema);
 
-  if (errors) {
-    return errorResponse(errors, formDataForRefill);
+    if (errors) {
+      return errorResponse(errors, formDataForRefill);
+    }
+
+    const customFieldIds = JSON.parse(formData.get('selected-custom-fields') as string);
+
+    const event = await createEvent({
+      event: parsedData as createEventArguments['event'],
+      customFieldIds,
+      adminId
+    });
+
+    return redirect(`/admin/events/${event.id}`);
   }
+  if (action === 'create-custom-field') {
+    const name = formData.get('input-name') as string
+    const type = formData.get('field-type') as string
+    const options = (formData.get('select-options') as string|null )?.split(',').map(s => s.trim()).filter(s => s.length > 0)
 
-  const customFieldIds = JSON.parse(formData.get('selected-custom-fields') as string);
+    await createCustomField({
+      name,
+      type,
+      options,
+    }) //todo: add this to the list of custom fields
 
-  const event = await createEvent({
-    event: parsedData as createEventArguments['event'],
-    customFieldIds,
-    adminId
-  });
-
-  return redirect(`/admin/events/${event.id}`);
+    return redirect(`/admin/events/new`)
+  }
 }
 
 
@@ -62,7 +80,7 @@ export default function NewEventPage() {
 
   const [customFields, setCustomFields] = useState<CustomField[]>([]);
   const addFieldSelectElementRef = useRef<HTMLSelectElement>(null);
-  const linkToCreateCustomFieldRef = useRef<HTMLAnchorElement>(null);
+  const createCustomModalRef = useRef<CreateCustomFieldModalHandle>(null);
 
   const handleCustomFieldSelectionChange = (value: string) => {
     addFieldSelectElementRef.current!.value = 'add-field';
@@ -71,7 +89,7 @@ export default function NewEventPage() {
     }
 
     if (value === 'create-new-field') {
-      linkToCreateCustomFieldRef.current!.click();
+      createCustomModalRef.current!.toggleModal();
       return;
     }
 
@@ -114,16 +132,14 @@ export default function NewEventPage() {
             customFields={customFields}
             onChange={handleCustomFieldSelectionChange}
             addFieldSelectElementRef={addFieldSelectElementRef} />
-          {/* eslint-disable-next-line jsx-a11y/anchor-has-content */}
-          <Link to='/admin/events/new/create-custom-field' ref={linkToCreateCustomFieldRef}></Link>
-          <Outlet />
         </Box>
-
         <Box>
           <SubmitButton>Create Event</SubmitButton>
         </Box>
+        <input type='hidden' name='action' value='create-event' />
       </SpaceY>
       </Form>
+      <CreateCustomFieldModal ref={createCustomModalRef} />
     </div>
   )
 }
