@@ -18,6 +18,7 @@ import { unvalidateEmailOfParticipant, validateEmailOfParticipant } from '~/mode
 import { deleteSinupById } from '~/models/signup.server';
 import type { DeleteEventModalHandle } from '~/components/admin/events/event/DeleteEventModal';
 import { DeleteEventModal } from '~/components/admin/events/event/DeleteEventModal';
+import { updateCustomInputValue } from '~/models/custom-fields.server';
 
 type LoaderData = {
   event: NonNullable<Awaited<ReturnType<typeof getEventWithAdminDetails>>>
@@ -74,6 +75,24 @@ export const action:ActionFunction = async ({ request, params }) => {
       await validateEmailOfParticipant(emailValidationToken)
     } else {
       await unvalidateEmailOfParticipant(emailValidationToken)
+    }
+  }
+
+  if (action === 'update-admin-only-checkbox') {
+    const signupId = formData.get('signupId') as string;
+    const value = formData.has('value') ? 'true' : 'false';
+    const eventInputField = event.eventInputFields.find(eif => eif.id === formData.get('eventInputFieldId'));
+    if (eventInputField) {
+      await updateCustomInputValue({eventInputFieldId: eventInputField.id, signupId, value})
+    }
+  }
+
+  if (action === 'update-admin-only-text') {
+    const signupId = formData.get('signupId') as string;
+    const value = formData.get('value') as string;
+    const eventInputField = event.eventInputFields.find(eif => eif.id === formData.get('eventInputFieldId'));
+    if (eventInputField) {
+      await updateCustomInputValue({eventInputFieldId: eventInputField.id, signupId, value})
     }
   }
 

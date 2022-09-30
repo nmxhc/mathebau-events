@@ -1,5 +1,6 @@
 import { PrismaClient } from "@prisma/client";
 import dataForTesting from "./seed/data_for_testing.json";
+import dataForProduction from "./seed/data_for_production.json";
 import type { AdminSeedData} from "./seed/seed_admins";
 import { seedAdmins } from "./seed/seed_admins";
 import type { EventSeedData} from "./seed/seed_events";
@@ -32,7 +33,8 @@ async function seed(option: string) {
     return;
   }
 
-  console.log(`There is no default seeding setup at the moment.\nThe database was left unchanged by seed command 🌱`);
+  await seedData(dataForProduction as SeedData);
+  console.log(`Database has been seeded for production. 🌱`);
 }
 
 seed(process.argv[2])

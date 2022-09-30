@@ -1,4 +1,4 @@
-import type { FC} from 'react';
+import type { ChangeEventHandler, FC} from 'react';
 import { useRef } from 'react'
 import { Box } from '~/components/elementary/Box'
 import { H2 } from '~/components/elementary/H2'
@@ -16,7 +16,7 @@ import { SignupEndDateInput } from './inputs/SignupEndDateInput'
 import { SignupStartDateInput } from './inputs/SignupStartDateInput'
 import { StartDateInput } from './inputs/StartDateInput'
 
-export const EventDataInputBox:FC<ActionData> = ({errors, formDataForRefill}) => {
+export const EventDataInputBox:FC<ActionData & {costInputChanged:ChangeEventHandler<HTMLInputElement>}> = ({errors, formDataForRefill, costInputChanged}) => {
   // TODO: use formDataForRefill to refill the form by setting the defaultValue of the input elements. Only needed for users with JavaScript disabled.
 
   const startDateInput = useRef<HTMLInputElement>(null);
@@ -96,6 +96,7 @@ export const EventDataInputBox:FC<ActionData> = ({errors, formDataForRefill}) =>
         right={
           <CostInput
             errorMessage={errors?.cost}
+            onChange={costInputChanged}
           />
         }
       />

@@ -10,7 +10,7 @@ const AddCustomFieldSelectOptions:FC<{availableCustomFields: CustomField[], cust
             (customField) => customField.id === availableCustomField.id
           ) === -1
         ).map((customField) => (
-          <option key={customField.id} value={customField.id} className='bg-white text-stone-700'>
+          <option key={customField.id} value={customField.id} className={`bg-white ${customField.adminOnly ? 'text-amber-700' : 'text-stone-700'}`}>
             {customField.name}
           </option>
         ))

@@ -32,7 +32,7 @@ export const loader:LoaderFunction = async ({ request, params }) => {
 export const action:ActionFunction = async ({ request, params }) => {
   const event = await requireEvent(params.eventId);
   const formData = await request.formData();
-  const customFieldsValidationSchema = getCustomFieldsValidationSchema(event.eventInputFields);
+  const customFieldsValidationSchema = getCustomFieldsValidationSchema(event.eventInputFields.filter(eIF => !eIF.inputField.adminOnly));
   const { errors, formDataForRefill, parsedData } = validateAndParseFormData(formData, [...customFieldsValidationSchema, ...signupEventFormValidationSchema]);
 
   if (errors) {

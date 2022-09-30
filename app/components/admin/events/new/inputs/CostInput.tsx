@@ -3,8 +3,8 @@ import type { InputWithLabelAndErrorMessageProps } from '~/components/forms/Inpu
 import { InputWithLabelAndErrorMessage } from '~/components/forms/InputWithLabelAndErrorMessage'
 
 export const CostInput:FC<
-  Pick<InputWithLabelAndErrorMessageProps, 'errorMessage'>
-> = ({errorMessage}) => {
+  Pick<InputWithLabelAndErrorMessageProps, 'errorMessage'|'onChange'>
+> = ({errorMessage, onChange}) => {
   return (
     <InputWithLabelAndErrorMessage
       name="cost"
@@ -12,6 +12,7 @@ export const CostInput:FC<
       label="Kosten (optional)"
       invalid={errorMessage !== undefined}
       errorMessage={errorMessage}
+      onChange={onChange}
     />
   )
 }

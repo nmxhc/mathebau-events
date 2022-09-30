@@ -32,7 +32,7 @@ export async function signupParticipant({eventId, participantId, customFields}: 
               id: eIF.id,
             },
           },
-          value: customFields[eIF.inputField.name],
+        value: customFields[eIF.inputField.name] || (eIF.inputField.typeId === "checkbox" ? "false" : ""),
         })),
       }
     },

@@ -49,32 +49,34 @@ export const EventSignupTable:FC<{event: Event}> = ({event}) => {
 
   const theme = useTheme({ // custom fields need an extra 33% width
     Table: `
-      --data-table-library_grid-template-columns: 100px 33% 140px 100px ${new Array(event.eventInputFields.length + 1).join(' 150px')} minmax(90px, 1fr);
+      --data-table-library_grid-template-columns: 100px 250px 140px 100px ${new Array(event.eventInputFields.length + 1).join(' 200px')} minmax(200px, 1fr);
     `,
     BaseCell: `
+      padding: 0.1rem 0.5rem;
       &:nth-of-type(1) {
         left: 0px;
-        z-index: 1;
       }
     `,
   });
 
-
-
   const data = {nodes};
 
   return (
-    <Table data={data} theme={theme} layout={{custom: true, horizontalScroll: true }} className='p-2 rounded-md mt-2 bg-stone-700'>
+    <div className='p-2 rounded-md mt-2 bg-stone-700'>
+    <Table data={data} theme={theme} layout={{custom: true, horizontalScroll: true }}>
       {(tableList) => (
         <>
           <Header>
             <HeaderRow className='bg-stone-700'>
-              <HeaderCell className=' z-50'>Name</HeaderCell>
-              <HeaderCell>Email</HeaderCell>
-              <HeaderCell>Anmeldezeit</HeaderCell>
-              <HeaderCell>Email bestätigt</HeaderCell>
-              {event.eventInputFields.map(eIF => ( // custom fields
-                <HeaderCell key={eIF.id}>{eIF.inputField.name}</HeaderCell>
+              <HeaderCell resize className=' z-50'>Name</HeaderCell>
+              <HeaderCell resize>Email</HeaderCell>
+              <HeaderCell resize>Anmeldezeit</HeaderCell>
+              <HeaderCell resize>Email bestätigt</HeaderCell>
+              {event.eventInputFields.filter(eIF => !eIF.inputField.adminOnly).map(eIF => ( // custom participant fields
+                <HeaderCell resize key={eIF.id}>{eIF.inputField.name}</HeaderCell>
+              ))}
+              {event.eventInputFields.filter(eIF => eIF.inputField.adminOnly).map(eIF => ( // custom adminOnly fields
+                <HeaderCell resize key={eIF.id}>{eIF.inputField.name}</HeaderCell>
               ))}
               <HeaderCell className='z-50'>Löschen</HeaderCell>
             </HeaderRow>
@@ -100,13 +102,44 @@ export const EventSignupTable:FC<{event: Event}> = ({event}) => {
                     <input type='hidden' name='signupId' value={item.id} />
                   </Form>
                 </Cell>
-                {event.eventInputFields.map(eIF => ( // custom fields
+                {event.eventInputFields.filter(eIF => !eIF.inputField.adminOnly).map(eIF => ( // custom fields
                   <Cell key={eIF.id}>{item[eIF.inputField.name]}</Cell>
                 ))}
-                <Cell pinRight>
+                {event.eventInputFields.filter(eIF => eIF.inputField.adminOnly).map(eIF => ( // custom adminOnly fields
+                  eIF.inputField.typeId === 'checkbox' ? (
+                    <Cell key={eIF.id}>
+                      <Form method='post' onChange={(e) => {submit(e.currentTarget)}}>
+                        <input
+                          type='checkbox'
+                          defaultChecked={item[eIF.inputField.name] === "true"}
+                          name='value'
+                          value='true'
+                        />
+                        <input type='hidden' name='action' value='update-admin-only-checkbox' />
+                        <input type='hidden' name='signupId' value={item.id} />
+                        <input type='hidden' name='eventInputFieldId' value={eIF.id} />
+                      </Form>
+                    </Cell>
+                  ) : (
+                    <Cell>
+                      <Form method='post' onChange={(e) => {submit(e.currentTarget)}}>
+                      <input
+                        type='text'
+                        defaultValue={item[eIF.inputField.name]}
+                        name='value'
+                        className='text-sm text-stone-900 w-full'
+                      />
+                      <input type='hidden' name='action' value='update-admin-only-text' />
+                      <input type='hidden' name='signupId' value={item.id} />
+                      <input type='hidden' name='eventInputFieldId' value={eIF.id} />
+                    </Form>
+                    </Cell>
+                  )
+                ))}
+                <Cell>
                   <Form method='post'>
                     <button
-                      className='text-red-500'
+                      className='text-red-300'
                       type='submit'
                     >
                       Löschen
@@ -121,5 +154,6 @@ export const EventSignupTable:FC<{event: Event}> = ({event}) => {
         </>
       )}
     </Table>
+    </div>
   );
 };

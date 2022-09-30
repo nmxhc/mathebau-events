@@ -60,18 +60,21 @@ export const action: ActionFunction = async ({ request }) => {
   if (action === 'create-custom-field') {
     const name = formData.get('input-name') as string
     const type = formData.get('field-type') as string
+    const required = formData.get('required') ? true : false;
+    const adminOnly = formData.get('admin-only') ? true : false;
     const options = (formData.get('select-options') as string|null )?.split(',').map(s => s.trim()).filter(s => s.length > 0)
 
     const customField = await createCustomField({
       name,
       type,
       options,
+      required,
+      adminOnly
     }) //todo: add this to the list of custom fields
 
     return redirect(`/admin/events/new?created-custom-field=${customField.id}`)
   }
 }
-
 
 export default function NewEventPage() {
 
@@ -80,11 +83,16 @@ export default function NewEventPage() {
   const createdCustomFieldId = searchParams.get('created-custom-field');
   const { availableCustomFields } = useLoaderData() as LoaderData;
 
-  const [customFields, setCustomFields] = useState<CustomField[]>([]);
+  const [lastAddedCustomFieldId, setLastAddedCustomFieldId] = useState<string | null>(null);
+
+  const commentsField = availableCustomFields.find(iF => iF.name === 'Kommentare')
+  const initialCustomFields = commentsField ? [commentsField] : []
+  const [customFields, setCustomFields] = useState<CustomField[]>(initialCustomFields);
   if (createdCustomFieldId) {
     const createdCustomField = availableCustomFields.find(c => c.id === createdCustomFieldId);
     if (createdCustomField) {
-      if (!customFields.find(c => c.id === createdCustomFieldId)) {
+      if (lastAddedCustomFieldId !== createdCustomFieldId) {
+        setLastAddedCustomFieldId(createdCustomFieldId);
         setCustomFields([...customFields, createdCustomField]);
       }
     }
@@ -120,6 +128,18 @@ export default function NewEventPage() {
     }
   }
 
+  const [addedPaidField, setAddedPaidField] = useState<boolean>(false);
+
+  const handleCostInputChanged = (value: string) => {
+    if (!addedPaidField) {
+      setAddedPaidField(true)
+      const paidInputField = availableCustomFields.find(field => field.name === 'Bezahlt');
+      if (paidInputField) {
+        setCustomFields([...customFields, paidInputField]);
+      }
+    }
+  }
+
   return (
     <div data-cy='new-event-page'>
       <SplitLeftRight>
@@ -132,6 +152,7 @@ export default function NewEventPage() {
         <EventDataInputBox
           errors={actionData?.errors}
           formDataForRefill={actionData?.formDataForRefill}
+          costInputChanged={(e) => handleCostInputChanged(e.target.value)}
         />
 
         <Box>

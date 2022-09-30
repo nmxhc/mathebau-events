@@ -103,6 +103,11 @@ export async function getEventById(eventId?: Event["id"]) {
     },
     include: {
       eventInputFields: {
+        where: {
+          inputField: {
+            adminOnly: false,
+          }
+        },
         include: {
           inputField: {
             include: {

@@ -13,7 +13,7 @@ export const SelectedCustomFields:FC<{customFields:CustomField[], removeField:(f
   return (
     <div className='mt-3 space-y-5'>
       <input type='hidden' name='selected-custom-fields' value={JSON.stringify(customFields.map((cF) => cF.id))} />
-      {customFields.map(field => (
+      {customFields.sort((a,b) => Number(a.adminOnly) - Number(b.adminOnly)).map(field => (
         <SubBox key={field.id}>
           <div className='flex justify-between'>
             <div><b>{field.name}</b></div>
@@ -28,7 +28,7 @@ export const SelectedCustomFields:FC<{customFields:CustomField[], removeField:(f
           <div className='flex justify-between'>
             {/* @ts-ignore*/}
             <div>{labelOfFieldIds[field.typeId]}</div>
-            <div>{(field.typeId === 'text' || field.typeId === 'number') && (field.required ? 'Pflichtfeld' : 'Optional')}</div>
+            <div>{field.adminOnly ? (<span className=' text-amber-200'>Nur für Admins - Wird nicht bei der Anmeldung abgefragt.</span>) : ((field.typeId === 'text' || field.typeId === 'number') && (field.required ? 'Pflichtfeld' : 'Optional'))}</div>
             {field.typeId === 'select' && (
               <>
               <div className='ml-5'>

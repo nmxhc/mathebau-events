@@ -12,7 +12,7 @@ export const CustomFieldSelection:FC<{availableCustomFields:CustomField[], custo
       <option value='add-field' className='bg-white text-stone-400'>Feld zu Event hinzufügen</option>
       <option value='create-new-field' className='bg-lime-600 text-lime-50'>Neues Feld erstellen</option>
       <AddCustomFieldSelectOptions
-        availableCustomFields={availableCustomFields.filter( f => !f.adminOnly)}
+        availableCustomFields={availableCustomFields}
         customFields={customFields}
       />
     </Select>
