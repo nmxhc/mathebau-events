@@ -16,8 +16,8 @@ import { requireAdminId } from '~/session_admin.server';
 import { EventSignupTable, handleDownloadCsv } from '~/components/admin/events/EventSignupTable';
 import { unvalidateEmailOfParticipant, validateEmailOfParticipant } from '~/models/participant.server';
 import { deleteSinupById } from '~/models/signup.server';
-import type { DeleteEventModalHandle } from '~/components/admin/events/event/DeleteEventModal';
-import { DeleteEventModal } from '~/components/admin/events/event/DeleteEventModal';
+import type { DeleteModalHandle } from '~/components/admin/events/event/DeleteModal';
+import { DeleteModal } from '~/components/admin/events/event/DeleteModal';
 import { updateCustomInputValue } from '~/models/custom-fields.server';
 
 type LoaderData = {
@@ -62,7 +62,7 @@ export const action:ActionFunction = async ({ request, params }) => {
   const formData = await request.formData();
   const action = formData.get('action');
 
-  if (action === 'delete-event') {
+  if (action === 'delete') {
     await deleteEvent(event.id)
     return redirect(`/admin/events`)
   }
@@ -106,7 +106,7 @@ export const action:ActionFunction = async ({ request, params }) => {
 
 const EventDetailsPage = () => {
   const { event } = useLoaderData() as LoaderData;
-  const deleteModalRef = useRef<DeleteEventModalHandle>(null);
+  const deleteModalRef = useRef<DeleteModalHandle>(null);
 
   return (
     <div data-cy='admin-event-page'>
@@ -149,7 +149,9 @@ const EventDetailsPage = () => {
         </Box>
       </SpaceY>
 
-      <DeleteEventModal eventName={event.name} ref={deleteModalRef} />
+      <DeleteModal ref={deleteModalRef}>
+        <p>Bist du sicher, dass du <i>"{event.name}"</i> unwiederruflich löschen möchtest?</p>
+      </DeleteModal>
     </div>
   )
 }

@@ -12,7 +12,7 @@ import { InputWithLabelAndErrorMessage } from '~/components/forms/InputWithLabel
 
 export const loader: LoaderFunction = async ({ request }) => {
   const adminId = await getAdminId(request);
-  if (adminId) return redirect("/admin/events");
+  if (adminId) return redirect("/admin");
   return json({});
 };
 
@@ -77,7 +77,7 @@ export const meta: MetaFunction = () => {
 const LoginPage:FC = () => {
 
   const [searchParams] = useSearchParams();
-  const redirectTo = searchParams.get("redirectTo") || "/admin/events";
+  const redirectTo = searchParams.get("redirectTo") || "/admin";
   const actionData = useActionData() as ActionData;
 
   return (

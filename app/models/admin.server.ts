@@ -13,7 +13,9 @@ export async function getAdminByEmail(email: Admin["email"]) {
   return prisma.admin.findUnique({ where: { email } });
 }
 
-export async function createAdmin(email: Admin["email"], name:Admin["name"], password: string) {
+export type CreateAdminArguments = {email: Admin["email"], name:Admin["name"], password: string}
+
+export async function createAdmin({email, name, password} : CreateAdminArguments) {
   const hashedPassword = await bcrypt.hash(password, 10);
 
   return prisma.admin.create({
@@ -29,8 +31,8 @@ export async function createAdmin(email: Admin["email"], name:Admin["name"], pas
   });
 }
 
-export async function deleteAdminByEmail(email: Admin["email"]) {
-  return prisma.admin.delete({ where: { email } });
+export async function deleteAdmin(id: Admin["id"]) {
+  return prisma.admin.delete({ where: { id } });
 }
 
 export async function verifyAdminLogin(

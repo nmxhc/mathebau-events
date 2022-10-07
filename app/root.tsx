@@ -10,10 +10,11 @@ import {
   Meta,
   Outlet,
   Scripts,
+  ScrollRestoration,
 } from "@remix-run/react";
 
 import tailwindStylesheetUrl from "./styles/tailwind.css";
-import { getAdmin } from "./session_admin.server";
+import { getAdmin, getAdminSession } from "./session_admin.server";
 import { Layout } from './components/Layout';
 
 export const links: LinksFunction = () => {
@@ -31,6 +32,8 @@ type LoaderData = {
 };
 
 export const loader: LoaderFunction = async ({ request }) => {
+  const session = await getAdminSession(request);
+  console.log("Root loader", session.get("adminId"), session.has("globalMessage"));
   return json<LoaderData>({
     admin: await getAdmin(request),
   });
@@ -48,6 +51,7 @@ export default function App() {
           <Outlet />
         </Layout>
         <Scripts />
+        <ScrollRestoration />
         <LiveReload />
       </body>
     </html>
