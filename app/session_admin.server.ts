@@ -74,7 +74,6 @@ export async function createAdminSession({
   remember: boolean;
   redirectTo: string;
 }) {
-  console.log('createAdminSession', adminId)
   const session = await getAdminSession(request);
   session.set(ADMIN_SESSION_KEY, adminId);
   return redirect(redirectTo, {

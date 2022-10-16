@@ -30,11 +30,8 @@ type LoaderData = {
 
 export const loader: LoaderFunction = async ({ request }) => {
   const session = await getAdminSession(request)
-  console.log(session.get('adminId'))
-  console.log(session.has('globalMessage'))
   const message = session.get('globalMessage') || null;
   const admin = await requireAdmin(request)
-  console.log('message', message)
   const events = await getAdminEvents(admin.id)
   return json({ admin, event: events[0], message });
 }
@@ -53,10 +50,7 @@ export const action: ActionFunction = async ({ request }) => {
     }
     const session = await getAdminSession(request);
     session.flash('globalMessage', 'New admin created');
-    console.log(session.get('adminId'))
-    console.log('flashed message')
     await createAdmin(parsedData as CreateAdminArguments);
-    console.log(session.has('globalMessage'))
     return redirect('/admin', {
       headers: {
         "Set-Cookie": await sessionStorage.commitSession(session),

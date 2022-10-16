@@ -33,7 +33,6 @@ type LoaderData = {
 
 export const loader: LoaderFunction = async ({ request }) => {
   const session = await getAdminSession(request);
-  console.log("Root loader", session.get("adminId"), session.has("globalMessage"));
   return json<LoaderData>({
     admin: await getAdmin(request),
   });
