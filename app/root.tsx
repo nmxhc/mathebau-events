@@ -14,7 +14,7 @@ import {
 } from "@remix-run/react";
 
 import tailwindStylesheetUrl from "./styles/tailwind.css";
-import { getAdmin, getAdminSession } from "./session_admin.server";
+import { getAdmin } from "./session_admin.server";
 import { Layout } from './components/Layout';
 
 export const links: LinksFunction = () => {
@@ -32,7 +32,6 @@ type LoaderData = {
 };
 
 export const loader: LoaderFunction = async ({ request }) => {
-  const session = await getAdminSession(request);
   return json<LoaderData>({
     admin: await getAdmin(request),
   });
