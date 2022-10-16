@@ -3,7 +3,7 @@ import type { ActionFunction, LoaderFunction} from '@remix-run/server-runtime';
 import { redirect } from '@remix-run/server-runtime';
 import { json } from '@remix-run/server-runtime'
 import moment from 'moment';
-import { useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { EventSignupInfo } from '~/components/admin/events/EventSignupInfo';
 import { Box } from '~/components/elementary/Box';
 import { Button } from '~/components/elementary/Button';
@@ -107,6 +107,11 @@ export const action:ActionFunction = async ({ request, params }) => {
 const EventDetailsPage = () => {
   const { event } = useLoaderData() as LoaderData;
   const deleteModalRef = useRef<DeleteModalHandle>(null);
+  const [signupTableEditable, setSignupTableEditable] = useState(true);
+
+  useEffect(() => {
+    setSignupTableEditable(false);
+  }, [])
 
   const copyAllEmails = () => {
     const emails = event.signups.map(s => s.participant.email).join('; ');
@@ -137,6 +142,7 @@ const EventDetailsPage = () => {
           <p><b>Anmeldungen:</b> {event.signups.length}{event.participantsLimit && `/${event.participantsLimit}`} </p>
           <EventSignupInfo event={event} />
         </Box>
+        
         <Box>
           <SplitLeftRight>
             <H2>Anmeldungen</H2>
@@ -144,12 +150,15 @@ const EventDetailsPage = () => {
               <Button color='blue' onClick={copyAllEmails} className='mr-3'>
                 Copy all Emails
               </Button>
-              <Button color='lime' onClick={() => handleDownloadCsv(event)}>
+              <Button color='lime' onClick={() => handleDownloadCsv(event)} className='mr-3'>
                 CSV-Export
+              </Button>
+              <Button color='red' onClick={() => setSignupTableEditable(!signupTableEditable)}>
+                {signupTableEditable ? 'Bearbeiten Sperren' : 'Bearbeiten'}
               </Button>
             </div>
           </SplitLeftRight>
-          <EventSignupTable event={event} />
+          <EventSignupTable event={event} editable={signupTableEditable} />
         </Box>
         <Box>
           <H2>Administratoren</H2>

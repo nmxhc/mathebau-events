@@ -42,19 +42,22 @@ export const handleDownloadCsv = (event: Event) => {
   downloadAsCsv(columns, getNodes(event), `Anmeldungen ${event.name} - Stand ${moment().format('YYYY-MM-DD HH_mm')}`);
 };
 
-export const EventSignupTable:FC<{event: Event}> = ({event}) => {
+export const EventSignupTable:FC<{event: Event, editable: boolean}> = ({event, editable}) => {
   
   const submit = useSubmit()
   const nodes = getNodes(event)
 
-  const theme = useTheme({ // custom fields need an extra 33% width
+  const theme = useTheme({
     Table: `
-      --data-table-library_grid-template-columns: 100px 250px 140px 100px ${new Array(event.eventInputFields.length + 1).join(' 200px')} minmax(200px, 1fr);
+      --data-table-library_grid-template-columns: 40px 100px 250px 140px 100px ${new Array(event.eventInputFields.length + 1).join(' 200px')} minmax(200px, 1fr);
     `,
     BaseCell: `
       padding: 0.1rem 0.5rem;
       &:nth-of-type(1) {
         left: 0px;
+      }
+      &:nth-of-type(2) {
+        left: 30px;
       }
     `,
   });
@@ -68,7 +71,8 @@ export const EventSignupTable:FC<{event: Event}> = ({event}) => {
         <>
           <Header>
             <HeaderRow className='bg-stone-700'>
-              <HeaderCell resize className=' z-50'>Name</HeaderCell>
+              <HeaderCell pinLeft className='z-50'>i</HeaderCell>
+              <HeaderCell pinLeft resize className='z-50'>Name</HeaderCell>
               <HeaderCell resize>Email</HeaderCell>
               <HeaderCell resize>Anmeldezeit</HeaderCell>
               <HeaderCell resize>Email bestätigt</HeaderCell>
@@ -83,8 +87,9 @@ export const EventSignupTable:FC<{event: Event}> = ({event}) => {
           </Header>
 
           <Body>
-            {tableList.map((item) => (
+            {tableList.map((item, i) => (
               <Row key={item.id} item={item} className='bg-stone-700'>
+                <Cell pinLeft>{i+1}</Cell>
                 <Cell pinLeft>{item.name}</Cell>
                 <Cell>{item.email}</Cell>
                 <Cell>
@@ -97,6 +102,7 @@ export const EventSignupTable:FC<{event: Event}> = ({event}) => {
                       defaultChecked={item.validatedEmail}
                       name='validatedEmail'
                       value='true'
+                      disabled={!editable}
                     />
                     <input type='hidden' name='action' value='update-email-validation' />
                     <input type='hidden' name='signupId' value={item.id} />
@@ -114,6 +120,7 @@ export const EventSignupTable:FC<{event: Event}> = ({event}) => {
                           defaultChecked={item[eIF.inputField.name] === "true"}
                           name='value'
                           value='true'
+                          disabled={!editable}
                         />
                         <input type='hidden' name='action' value='update-admin-only-checkbox' />
                         <input type='hidden' name='signupId' value={item.id} />
@@ -128,6 +135,7 @@ export const EventSignupTable:FC<{event: Event}> = ({event}) => {
                         defaultValue={item[eIF.inputField.name]}
                         name='value'
                         className='text-sm text-stone-900 w-full'
+                        disabled={!editable}
                       />
                       <input type='hidden' name='action' value='update-admin-only-text' />
                       <input type='hidden' name='signupId' value={item.id} />
@@ -136,7 +144,9 @@ export const EventSignupTable:FC<{event: Event}> = ({event}) => {
                     </Cell>
                   )
                 ))}
+                
                 <Cell>
+                {editable && (
                   <Form method='post'>
                     <button
                       className='text-red-300'
@@ -147,7 +157,9 @@ export const EventSignupTable:FC<{event: Event}> = ({event}) => {
                     <input type='hidden' name='action' value='delete-signup' />
                     <input type='hidden' name='signupId' value={item.id} />
                   </Form>
+                )}
                 </Cell>
+                
               </Row>
             ))}
           </Body>
