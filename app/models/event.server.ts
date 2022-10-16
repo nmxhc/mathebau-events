@@ -123,6 +123,11 @@ export async function getEventById(eventId?: Event["id"]) {
           }
         }
       },
+      signups: {
+        select: {
+          id: true,
+        }
+      }
     }
   });
 }

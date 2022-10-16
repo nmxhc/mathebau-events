@@ -108,6 +108,11 @@ const EventDetailsPage = () => {
   const { event } = useLoaderData() as LoaderData;
   const deleteModalRef = useRef<DeleteModalHandle>(null);
 
+  const copyAllEmails = () => {
+    const emails = event.signups.map(s => s.participant.email).join('; ');
+    navigator.clipboard.writeText(emails);
+  }
+
   return (
     <div data-cy='admin-event-page'>
       <SplitLeftRight>
@@ -135,9 +140,14 @@ const EventDetailsPage = () => {
         <Box>
           <SplitLeftRight>
             <H2>Anmeldungen</H2>
-            <Button color='lime' onClick={() => handleDownloadCsv(event)}>
-              CSV-Export
-            </Button>
+            <div>
+              <Button color='blue' onClick={copyAllEmails} className='mr-3'>
+                Copy all Emails
+              </Button>
+              <Button color='lime' onClick={() => handleDownloadCsv(event)}>
+                CSV-Export
+              </Button>
+            </div>
           </SplitLeftRight>
           <EventSignupTable event={event} />
         </Box>
