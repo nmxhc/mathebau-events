@@ -3,7 +3,7 @@ import nodemailer from "nodemailer";
 import type { createParticipant } from '~/models/participant.server';
 
 export function getTransporter() {
-  return nodemailer.createTransport({
+  const transporterOptions = {
     host: process.env.EMAIL_HOST,
     port: parseInt(process.env.EMAIL_HOST || "587"),
     secure: false,
@@ -11,7 +11,9 @@ export function getTransporter() {
       user: process.env.EMAIL_USER,
       pass: process.env.EMAIL_PASSWORD || "",
     },
-  });
+  }
+  console.log('transporterOptions',transporterOptions);
+  return nodemailer.createTransport(transporterOptions);
 }
 
 export function sendNewParticipantSignupEmail(
@@ -28,7 +30,9 @@ export function sendNewParticipantSignupEmail(
   };
   transporter.sendMail(mailOptions, (error, info) => {
     if (error) {
-      console.log(error);
+      console.log('Email send failed, error:', error);
+      console.log('mailOptions:', mailOptions);
+      console.log('transporter:', transporter);
     } else {
       console.log("Email sent: " + info.response);
     }
