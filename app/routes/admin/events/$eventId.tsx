@@ -129,7 +129,7 @@ const EventDetailsPage = () => {
         </Box>
         <Box>
           <H2>Event Status</H2>
-          <p><b>Anmeldungen:</b> XX{event.participantsLimit && `/${event.participantsLimit}`} </p>
+          <p><b>Anmeldungen:</b> {event.signups.length}{event.participantsLimit && `/${event.participantsLimit}`} </p>
           <EventSignupInfo event={event} />
         </Box>
         <Box>

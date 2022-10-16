@@ -24,6 +24,13 @@ export function getAdminEvents(adminId: Admin["id"]) {
         }
       },
     },
+    include: {
+      signups: {
+        select: {
+          id: true,
+        }
+      }
+    },
     orderBy: { startDate: "asc" },
   });
 }

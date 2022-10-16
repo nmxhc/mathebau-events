@@ -1,10 +1,11 @@
 import { Link } from '@remix-run/react'
 import moment from 'moment'
 import type { FC } from 'react'
-import type { Event } from '~/models/event.server'
+import type { getAdminEvents } from '~/models/event.server'
+import type { ArrayElement } from '~/utils'
 import { Box } from '../elementary/Box'
 import { EventSignupInfo } from './events/EventSignupInfo'
-export const AdminEventBox:FC<{event: Event}> = ({event}) => {
+export const AdminEventBox:FC<{event: ArrayElement<NonNullable<Awaited<ReturnType<typeof getAdminEvents>>>>}> = ({event}) => {
   return (
     <Box data-cy={`${event.name.replace(/\s/g , "-")}-box`}>
       <div className='flex justify-between items-center mb-4'>
@@ -22,7 +23,7 @@ export const AdminEventBox:FC<{event: Event}> = ({event}) => {
         </div>
         <div>
           <EventSignupInfo event={event} />
-          <p><b>Teilnehmer:</b> XX{event.participantsLimit && `/${event.participantsLimit}`} </p>
+          <p><b>Teilnehmer:</b> {event.signups.length}{event.participantsLimit && `/${event.participantsLimit}`} </p>
         </div>
       </div>
     </Box>

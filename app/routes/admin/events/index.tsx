@@ -6,6 +6,7 @@ import { H1 } from '~/components/elementary/H1';
 import type { Event} from '~/models/event.server';
 import { getAdminEvents } from '~/models/event.server';
 import { requireAdminId } from '~/session_admin.server';
+import type { ArrayElement } from '~/utils';
 
 type LoaderData = {
   events: Awaited<ReturnType<typeof getAdminEvents>>;
@@ -23,7 +24,7 @@ export default function EventsPage() {
     <div data-cy='admin-events-page'>
       <div data-cy='upcoming-admin-events' className='space-y-3'>
         <H1> Deine Aktuellen Events:</H1>
-        {events.filter((event: Event) => new Date() < new Date(event.endDate) ).map((event: Event) => (
+        {events.filter((event: ArrayElement<NonNullable<Awaited<ReturnType<typeof getAdminEvents>>>>) => new Date() < new Date(event.endDate) ).map((event: ArrayElement<NonNullable<Awaited<ReturnType<typeof getAdminEvents>>>>) => (
           <AdminEventBox event={event} key={event.id} />
         ))}
         <Link to='/admin/events/new'>
@@ -32,7 +33,7 @@ export default function EventsPage() {
       </div>
       <div data-cy='past-admin-events' className='space-y-3'>
         <H1>Deine Vergangenen Events:</H1>
-        {events.filter((event: Event) => new Date(event.endDate) < new Date()).map((event: Event) => (
+        {events.filter((event: Event) => new Date(event.endDate) < new Date()).map((event: ArrayElement<NonNullable<Awaited<ReturnType<typeof getAdminEvents>>>>) => (
           <AdminEventBox event={event} key={event.id} />
         ))}
       </div>

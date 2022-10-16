@@ -10,7 +10,7 @@ export const Navbar = () => {
         <Link to="/">
           <div className='px-3 sm:px-5 py-3 hover:bg-lime-700 transition duration-200 ease-in-out'>Mathebau Events</div>
         </Link>
-        {admin && (<Link to="/admin/events">
+        {admin && (<Link to="/admin">
           <div className='px-3 sm:px-5 py-3 hover:bg-lime-700 transition duration-200 ease-in-out'>Admin Bereich</div>
         </Link>)}
       </nav>
