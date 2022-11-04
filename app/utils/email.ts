@@ -12,7 +12,6 @@ export function getTransporter() {
       pass: process.env.EMAIL_PASSWORD || "",
     },
   }
-  console.log('transporterOptions',transporterOptions);
   return nodemailer.createTransport(transporterOptions);
 }
 
@@ -25,9 +24,17 @@ export function sendNewParticipantSignupEmail(
     from: `"Mathebau Events" <${process.env.EMAIL_USER}>`,
     to: participant.email,
     subject: `Anmeldung für ${event.name}`,
-    text: `Hallo ${participant.name}, vielen Dank für deine Anmeldung zum Event "${event.name}".${(event.participantsLimit && event.participantsLimit < event.signups.length) && ' Aktuell stehst du auf der Warteliste, da das Teilnehmerlimit erreicht ist. Falls du von deinen Event-Administratoren nichts weiteres hörst, frag bitte bei ihnen nach!'} Bitte bestätige deine Anmeldung, indem du auf den folgenden Link klickst: ${process.env.BASE_URL}/participant/email-bestaetigung/${participant.emailValidationToken}`,
-    html: `Hallo ${participant.name}, vielen Dank für deine Anmeldung zum Event "${event.name}".${event.participantsLimit && event.participantsLimit <= event.signups.length && ' Aktuell stehst du auf der Warteliste, da das Teilnehmerlimit erreicht ist. Falls du von deinen Event-Administratoren nichts weiteres hörst, frag bitte bei ihnen nach!'} Bitte bestätige deine Anmeldung, indem du auf den folgenden Link klickst: <a href="${process.env.BASE_URL}/participant/email-bestaetigung/${participant.emailValidationToken}">${process.env.BASE_URL}/participant/email-bestaetigung/${participant.emailValidationToken}</a>`,
+    text: `
+Hallo ${participant.name},
+
+vielen Dank für deine Anmeldung zum Event "${event.name}".${(event.participantsLimit && event.participantsLimit <= event.signups.length) ? ' Aktuell stehst du auf der Warteliste, da das Teilnehmerlimit erreicht ist. Falls du von deinen Event-Administratoren nichts weiteres hörst, frag bitte bei ihnen nach!': ''}
+
+Bitte bestätige deine Anmeldung, indem du auf den folgenden Link klickst:
+${process.env.BASE_URL}/participant/email-bestaetigung/${participant.emailValidationToken}
+
+`,
   };
+  console.log(mailOptions.text)
   transporter.sendMail(mailOptions, (error, info) => {
     if (error) {
       console.log('Email send failed, error:', error);
