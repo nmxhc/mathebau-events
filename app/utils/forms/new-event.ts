@@ -1,6 +1,6 @@
 import { getTodayDateString } from '../dates';
 import type { InputValidationSchema } from './validation';
-import { getDateParser, getEndOfDayDateParser, getNumberOrNullParser, getIdentityParser } from './validation/parser_getters';
+import { getDateParser, getNumberOrNullParser, getIdentityParser } from './validation/parser_getters';
 import { getDateValidator, getRequireValidator, getOptionalNumberValidator, getOptionalStringValidator, getValidator } from './validation/validator_getters';
 
 const requireEventName = getRequireValidator("Dein Event braucht einen Namen");
@@ -88,7 +88,7 @@ export const newEventFormValidationSchema: InputValidationSchema = [
   }, {
     inputName: 'endDate',
     validators: [ requireEndDate, requireEndDateToBeADate, requireDateToBeTodayOrInFuture, requireEndDateToBeAfterStartDate ],
-    parser: getEndOfDayDateParser(),
+    parser: getDateParser(),
   }, {
     inputName: 'description',
     validators: [ requireDescription ],
@@ -103,7 +103,7 @@ export const newEventFormValidationSchema: InputValidationSchema = [
     inputName: 'signupEndDate',
     validators: [ requireSignupEndDate, requireSignupEndDateToBeADate, requireDateToBeTodayOrInFuture,
       requireSignupEndDateToBeStrictlyBeforeStartDate, requireSignupEndDateToBeAfterSignupStartDate ],
-    parser: getEndOfDayDateParser(),
+    parser: getDateParser(),
   }, {
     inputName: 'participantsLimit',
     validators: [requireParticipantsLimitToBeNumberOrUnset],

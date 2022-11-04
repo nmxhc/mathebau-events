@@ -33,7 +33,7 @@ export const loader: LoaderFunction = async ({ request }) => {
   const message = session.get('globalMessage') || null;
   const admin = await requireAdmin(request)
   const events = await getAdminEvents(admin.id)
-  return json({ admin, event: events[0], message });
+  return json({ admin, event: events[events.length-1], message });
 }
 
 export const action: ActionFunction = async ({ request }) => {

@@ -1,4 +1,3 @@
-import { getEndOfDay } from '~/utils/dates';
 import type { Parser } from '../validation';
 
 export function getParser( parseValue: (value:FormDataEntryValue|null) => any, options? : {renamePropertyTo?: string}): Parser {
@@ -17,10 +16,6 @@ export function getNumberOrNullParser () {
 
 export function getDateParser () {
   return getParser(value => new Date(value as string));
-}
-
-export function getEndOfDayDateParser () {
-  return getParser(value => getEndOfDay(value as string));
 }
 
 export function getCheckboxToStringParser () {

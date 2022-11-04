@@ -20,20 +20,11 @@ export function dateToString (date: Date) : string {
   return date.toISOString().split('T')[0];
 }
 
-export function dateTimePlusMinutes (date: Date, minutes: number) : Date {
-  date.setMinutes(date.getMinutes() + minutes);
-  return date;
-}
-
-export function getEndOfDay (date: string) : Date {
-  return dateTimePlusMinutes(new Date(dateStringPlusDays(date, 1)),-1)
-}
-
-export function todayIsBetween(start: string | Date, end: string | Date) : boolean {
-  const today = new Date();
+export function todayIsBetween(start: string, end: string) : boolean {
+  const today = new Date(getTodayDateString());
   const startD = new Date(start);
   const endD = new Date(end);
-  return today > startD && today < endD;
+  return !(today < startD) && !(today > endD);
 }
 
 export function dateStringsAreWeaklyOrdered (dates: string[]) : boolean {
