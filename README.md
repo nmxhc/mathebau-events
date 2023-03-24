@@ -36,7 +36,7 @@ Enthalten ist noch:
   npm run dev
   ```
 
-- Or start the dev server with e2e testing (if you ask me thats what you'd want most of the time you start the dev server):
+- Or start the dev server with e2e testing:
 
   ```sh
   npm run test:e2e:dev

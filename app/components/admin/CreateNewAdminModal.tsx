@@ -8,10 +8,10 @@ import { InputWithLabelAndErrorMessage } from '~/components/forms/InputWithLabel
 import { SubmitButton } from '~/components/forms/SubmitButton';
 import type { ActionData } from '~/utils/forms/validation';
 
-export type CreateCustomFieldModalHandle = {
+export type CreateNewAdminModalHandle = {
   toggleModal: () => void
   hideModal: () => void
-  addModal: () => void
+  showModal: () => void
 }
 
 export const CreateNewAdminModal = forwardRef(({actionData}:{actionData?:ActionData}, ref) => {
@@ -46,7 +46,7 @@ export const CreateNewAdminModal = forwardRef(({actionData}:{actionData?:ActionD
   }));
 
   return (
-    <div data-cy='create-custom-fields-modal' className='hidden fixed inset-0 bg-black bg-opacity-70 justify-center items-center' ref={modal}>
+    <div data-cy='create-new-admin-modal' className='hidden fixed inset-0 bg-black bg-opacity-70 justify-center items-center' ref={modal}>
       <div className='bg-stone-900 px-5 py-3 rounded-lg w-1/2 '>
         <div className='flex justify-between items-center mb-3 '>
           <h4 className='text-lime-400 text-2xl'>Neuen Admin anlegen</h4>

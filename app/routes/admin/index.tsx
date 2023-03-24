@@ -2,12 +2,13 @@ import { Link, useActionData, useLoaderData } from '@remix-run/react';
 import type { ActionFunction, LoaderFunction} from '@remix-run/server-runtime';
 import { redirect } from '@remix-run/server-runtime';
 import { json } from '@remix-run/server-runtime';
+import { ReactNode, useState} from 'react';
 import { useRef } from 'react';
 import { AdminEventBox } from '~/components/admin/AdminEventBox';
-import type { CreateCustomFieldModalHandle} from '~/components/admin/CreateNewAdminModal';
+import { ChangePasswordModal } from '~/components/admin/ChangePasswordModal';
+import type { CreateNewAdminModalHandle} from '~/components/admin/CreateNewAdminModal';
 import { CreateNewAdminModal } from '~/components/admin/CreateNewAdminModal';
-import type { DeleteModalHandle } from '~/components/admin/events/event/DeleteModal';
-import { DeleteModal } from '~/components/admin/events/event/DeleteModal';
+import { DeleteModal } from '~/components/elementary/modals/DeleteModal';
 import { Box } from '~/components/elementary/Box';
 import { Button } from '~/components/elementary/Button';
 import { H1 } from '~/components/elementary/H1';
@@ -63,17 +64,22 @@ export default function AdminHomePage() {
 
   const actionData = useActionData<ActionData>();
   const { admin, event, message } = useLoaderData<LoaderData>();
-  const deleteModalRef = useRef<DeleteModalHandle>(null);
-  const createNewAdminModalRef = useRef<CreateCustomFieldModalHandle>(null);
+  const [shownModal, setShownModal] = useState<'create-new-admin' | 'change-password' | 'delete' | null>(null);
+  const createNewAdminModalRef = useRef<CreateNewAdminModalHandle>(null);
+  const changePasswordModalRef = useRef<CreateNewAdminModalHandle>(null);
   if (message) {
     createNewAdminModalRef.current?.hideModal();
+  }
+
+  const closeModal = () => {
+    setShownModal(null);
   }
 
   return (
     <div data-cy='admin-home-page'>
       <SplitLeftRight>
         <H1>Admin Panel</H1>
-        <Button color='red' className='mb-3' onClick={() => deleteModalRef.current?.toggleModal()}>  
+        <Button color='red' className='mb-3' onClick={() => {setShownModal('delete')}}>  
           Account Löschen
         </Button>
       </SplitLeftRight>
@@ -90,15 +96,19 @@ export default function AdminHomePage() {
         </Link>
       </>)}
       <Box>
-        <p><b>Deine Daten:</b></p>
-        <p><b>Name:</b> {admin.name}</p>
-        <p><b>Email:</b> {admin.email}</p>
+        <H2>Deine Daten:</H2>
+        <div className='pl-3 mt-2'>
+          <p><b>Name:</b> {admin.name}</p>
+          <p><b>Email:</b> {admin.email}</p>
+          <p><button className=' text-blue-300' onClick={() => changePasswordModalRef.current?.showModal() }>Passwort Ändern</button></p>
+        </div>
       </Box>
-      <Button color='lime' className='w-full mt-3' onClick={() => createNewAdminModalRef.current?.toggleModal()}><b>Neuen Admin anlegen</b></Button>
+      <Button color='lime' className='w-full mt-3' onClick={() => createNewAdminModalRef.current?.showModal()}><b>Neuen Admin anlegen</b></Button>
 
       <CreateNewAdminModal ref={createNewAdminModalRef} actionData={actionData} />
+      <ChangePasswordModal ref={changePasswordModalRef} actionData={actionData} />
 
-      <DeleteModal ref={deleteModalRef}>
+      <DeleteModal isShown={shownModal === 'delete'} closeModal={closeModal}>
         <p>Willst du deinen Admin Account <i>{admin.name}</i> unwiederruflich löschen? Du verlierst damit Zugriff auf alle Events, für die du aktuell Administrator bist. Events werden nicht automatisch gelöscht.</p>
       </DeleteModal>
     </div>
