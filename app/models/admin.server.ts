@@ -63,3 +63,30 @@ export async function verifyAdminLogin(
 
   return adminWithoutPassword;
 }
+
+export async function updateAdminPassword(
+  id: Admin["id"],
+  password: string
+) {
+  const hashedPassword = await bcrypt.hash(password, 10);
+
+  const admin = await prisma.admin.findUnique({
+    where: { id },
+    include: {
+      password: true,
+    },
+  })
+
+  if (admin?.password) {
+    await prisma.admin.update({
+      where: { id },
+      data: {
+        password: {
+          update: {
+            hash: hashedPassword,
+          },
+        },
+      },
+    });
+  }
+}

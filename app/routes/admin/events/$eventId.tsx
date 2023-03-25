@@ -3,7 +3,7 @@ import type { ActionFunction, LoaderFunction} from '@remix-run/server-runtime';
 import { redirect } from '@remix-run/server-runtime';
 import { json } from '@remix-run/server-runtime'
 import moment from 'moment';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { EventSignupInfo } from '~/components/admin/events/EventSignupInfo';
 import { Box } from '~/components/elementary/Box';
 import { Button } from '~/components/elementary/Button';
@@ -16,8 +16,7 @@ import { requireAdminId } from '~/session_admin.server';
 import { EventSignupTable, handleDownloadCsv } from '~/components/admin/events/EventSignupTable';
 import { unvalidateEmailOfParticipant, validateEmailOfParticipant } from '~/models/participant.server';
 import { deleteSinupById } from '~/models/signup.server';
-import type { DeleteModalHandle } from '~/components/admin/events/event/DeleteModal';
-import { DeleteModal } from '~/components/admin/events/event/DeleteModal';
+import { DeleteModal } from '~/components/elementary/modals/DeleteModal';
 import { updateCustomInputValue } from '~/models/custom-fields.server';
 
 type LoaderData = {
@@ -106,8 +105,10 @@ export const action:ActionFunction = async ({ request, params }) => {
 
 const EventDetailsPage = () => {
   const { event } = useLoaderData() as LoaderData;
-  const deleteModalRef = useRef<DeleteModalHandle>(null);
+  const [shownModal, setShownModal] = useState<'delete' | null>(null);
   const [signupTableEditable, setSignupTableEditable] = useState(true);
+
+  const closeModal = () => setShownModal(null);
 
   useEffect(() => {
     setSignupTableEditable(false);
@@ -122,7 +123,7 @@ const EventDetailsPage = () => {
     <div data-cy='admin-event-page'>
       <SplitLeftRight>
         <H1>{event.name}</H1>
-        <Button dataCy='delete-event-button' color='red' className='mb-3' onClick={() => deleteModalRef.current?.toggleModal()}>  
+        <Button dataCy='delete-event-button' color='red' className='mb-3' onClick={() => setShownModal('delete')}>
           Event Löschen
         </Button>
       </SplitLeftRight>
@@ -168,7 +169,7 @@ const EventDetailsPage = () => {
         </Box>
       </SpaceY>
 
-      <DeleteModal ref={deleteModalRef}>
+      <DeleteModal isShown={shownModal === 'delete'} closeModal={closeModal}>
         <p>Bist du sicher, dass du <i>"{event.name}"</i> unwiederruflich löschen möchtest?</p>
       </DeleteModal>
     </div>

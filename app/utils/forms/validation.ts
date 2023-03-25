@@ -68,7 +68,7 @@ export function someErrors (errors: ErrorMessages) : boolean {
   return Object.keys(errors).length > 0;
 }
 
-export function errorResponse (errors: ErrorMessages, formDataForRefill: FormDataForRefill){
+export function errorResponse (errors: ErrorMessages, formDataForRefill?: FormDataForRefill){
   return json<ActionData>(
     { errors, formDataForRefill },
     { status: 400 }

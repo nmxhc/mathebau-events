@@ -44,13 +44,6 @@ export const action: ActionFunction = async ({ request }) => {
     );
   }
 
-  if (password.length < 8) {
-    return json<ActionData>(
-      { errors: { password: "Password is too short" } },
-      { status: 400 }
-    );
-  }
-
   const admin = await verifyAdminLogin(email, password);
 
   if (!admin) {
