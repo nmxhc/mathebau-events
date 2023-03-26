@@ -4,8 +4,8 @@ import { InputWithLabelAndErrorMessage } from '~/components/forms/InputWithLabel
 import { getTomorrowDateString } from '~/utils/dates';
 
 export const EndDateInput:FC<
-  Pick<InputWithLabelAndErrorMessageProps, 'errorMessage'|'inputElementRef'>
-> = ({errorMessage, inputElementRef}) => {
+  Pick<InputWithLabelAndErrorMessageProps, 'errorMessage'|'inputElementRef'|'defaultValue'>
+> = ({errorMessage, inputElementRef, defaultValue}) => {
   return (
     <InputWithLabelAndErrorMessage
       type="date"
@@ -13,6 +13,7 @@ export const EndDateInput:FC<
       label="Enddatum"
       min={getTomorrowDateString()}
       inputElementRef={inputElementRef}
+      defaultValue={defaultValue}
       invalid={errorMessage !== undefined}
       errorMessage={errorMessage}
     />

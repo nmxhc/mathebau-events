@@ -1,5 +1,5 @@
 import { Link } from '@remix-run/react';
-import moment from 'moment';
+import { EventDataInputs } from '~/components/admin/events/new/EventDataInputs';
 import { Button } from '~/components/elementary/Button';
 import { H2 } from '~/components/elementary/H2';
 import { SplitLeftRight } from '~/components/elementary/SplitLeftRight';
@@ -21,13 +21,7 @@ const EventEditPage = () => {
           <Button color='stone'>Abbrechen</Button>
         </Link>
       </SplitLeftRight>
-      <p><b>Event-Name:</b> {event.name}</p>
-      <p><b>Wann?</b> {moment(event.startDate).format('DD.MM.YYYY')} {`bis ${moment(event.endDate).format('DD.MM.YYYY')}`}</p>
-      <p><b>Wo?</b> {event.location}</p>
-      <p><b>Was?</b> {event.description}</p>
-      { event.cost && <p><b>Kosten:</b> {event.cost}</p> }
-      <p><b>Anmeldezeitraum:</b> {moment(event.signupStartDate).format('DD.MM.YYYY')} bis {moment(event.signupEndDate).format('DD.MM.YYYY')}</p>
-      <p><b>Teilnehmer-Limit:</b> {event.participantsLimit ? `${event.participantsLimit}` : 'Kein Limit'} </p>
+      <EventDataInputs defaultValues={event} />
     </div>
   )
 }

@@ -7,7 +7,7 @@ import { H1 } from '~/components/elementary/H1';
 import { requireAdminId } from '~/session_admin.server';
 import { SubmitButton } from '~/components/forms/SubmitButton';
 import { SpaceY } from '~/components/elementary/SpaceY';
-import { EventDataInputBox } from '~/components/admin/events/new/EventDataInputBox';
+import { EventDataInputs } from '~/components/admin/events/new/EventDataInputs';
 import { SplitLeftRight } from '~/components/elementary/SplitLeftRight';
 import type { ActionData} from '~/utils/forms/validation';
 import { validateAndParseFormData} from '~/utils/forms/validation';
@@ -149,11 +149,16 @@ export default function NewEventPage() {
 
       <Form method="post">
       <SpaceY>
-        <EventDataInputBox
-          errors={actionData?.errors}
-          formDataForRefill={actionData?.formDataForRefill}
-          costInputChanged={(e) => handleCostInputChanged(e.target.value)}
-        />
+      <Box>
+        <SpaceY>
+          <H2>Eventdaten</H2>
+          <EventDataInputs
+            errors={actionData?.errors}
+            formDataForRefill={actionData?.formDataForRefill}
+            costInputChanged={(e) => handleCostInputChanged(e.target.value)}
+          />
+        </SpaceY>
+      </Box>
 
         <Box>
           <H2>Abfragefelder</H2>

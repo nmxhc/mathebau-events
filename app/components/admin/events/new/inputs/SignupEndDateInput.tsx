@@ -4,8 +4,8 @@ import { InputWithLabelAndErrorMessage } from '~/components/forms/InputWithLabel
 import { getTodayDateString } from '~/utils/dates';
 
 export const SignupEndDateInput:FC<
-  Pick<InputWithLabelAndErrorMessageProps, 'errorMessage'|'inputElementRef'>
-> = ({errorMessage, inputElementRef}) => {
+  Pick<InputWithLabelAndErrorMessageProps, 'errorMessage'|'inputElementRef'|'defaultValue'>
+> = ({errorMessage, inputElementRef, defaultValue}) => {
   return (
     <InputWithLabelAndErrorMessage
       name="signupEndDate"
@@ -13,6 +13,7 @@ export const SignupEndDateInput:FC<
       label="Anmeldeschluss"
       min={getTodayDateString()}
       inputElementRef={inputElementRef}
+      defaultValue={defaultValue}
       invalid={errorMessage !== undefined}
       errorMessage={errorMessage}
     />

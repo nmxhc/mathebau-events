@@ -4,8 +4,8 @@ import { InputWithLabelAndErrorMessage } from '~/components/forms/InputWithLabel
 import { getTodayDateString } from '~/utils/dates';
 
 export const SignupStartDateInput:FC<
-  Pick<InputWithLabelAndErrorMessageProps, 'errorMessage'|'inputElementRef'|'onChange'>
-> = ({errorMessage, inputElementRef, onChange}) => {
+  Pick<InputWithLabelAndErrorMessageProps, 'errorMessage'|'inputElementRef'|'onChange'|'defaultValue'>
+> = ({errorMessage, inputElementRef, onChange, defaultValue}) => {
   return (
     <InputWithLabelAndErrorMessage
       type="date"

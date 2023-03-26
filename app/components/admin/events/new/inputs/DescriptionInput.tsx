@@ -3,13 +3,14 @@ import type { TextAreaWithLabelAndErrorMessageProps } from '~/components/forms/T
 import { TextAreaWithLabelAndErrorMessage } from '~/components/forms/TextAreaWithLabelAndErrorMessage';
 
 export const DescriptionInput:FC<
-  Pick<TextAreaWithLabelAndErrorMessageProps, 'errorMessage'>
-> = ({errorMessage}) => {
+  Pick<TextAreaWithLabelAndErrorMessageProps, 'errorMessage'|'defaultValue'>
+> = ({errorMessage, defaultValue}) => {
   return (
     <TextAreaWithLabelAndErrorMessage
       name="description"
       label="Beschreibung"
       rows={4}
+      defaultValue={defaultValue}
       invalid={errorMessage !== undefined}
       errorMessage={errorMessage}
     />

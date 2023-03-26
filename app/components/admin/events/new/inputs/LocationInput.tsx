@@ -3,13 +3,14 @@ import type { InputWithLabelAndErrorMessageProps } from '~/components/forms/Inpu
 import { InputWithLabelAndErrorMessage } from '~/components/forms/InputWithLabelAndErrorMessage'
 
 export const LocationInput:FC<
-  Pick<InputWithLabelAndErrorMessageProps, 'errorMessage'>
-> = ({errorMessage}) => {
+  Pick<InputWithLabelAndErrorMessageProps, 'errorMessage'|'defaultValue'>
+> = ({errorMessage, defaultValue}) => {
   return (
     <InputWithLabelAndErrorMessage
       type="text"
       name="location"
       label="Veranstaltungsort"
+      defaultValue={defaultValue}
       invalid={errorMessage !== undefined}
       errorMessage={errorMessage}
     />
