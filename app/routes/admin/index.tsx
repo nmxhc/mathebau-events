@@ -54,7 +54,6 @@ export const action: ActionFunction = async ({ request }) => {
     const oldPassword = formData.get('oldPassword');
     const newPasswordd = formData.get('newPasswordd');
     const passwordConfirmation = formData.get('passwordConfirmation');
-    console.log(oldPassword, newPasswordd, passwordConfirmation)
 
     if (typeof oldPassword !== 'string' || oldPassword.length === 0) {
       return errorResponse({ oldPassword: 'Aktuelles Passwort wird benötigt' });
