@@ -11,7 +11,6 @@ import { Box } from '~/components/elementary/Box';
 import { Button } from '~/components/elementary/Button';
 import { H1 } from '~/components/elementary/H1';
 import { H2 } from '~/components/elementary/H2';
-import { SplitLeftRight } from '~/components/elementary/SplitLeftRight';
 import type { CreateAdminArguments} from '~/models/admin.server';
 import { updateAdminPassword} from '~/models/admin.server';
 import { verifyAdminLogin} from '~/models/admin.server';
@@ -107,12 +106,7 @@ export default function AdminHomePage() {
 
   return (
     <div data-cy='admin-home-page'>
-      <SplitLeftRight>
-        <H1>Admin Panel</H1>
-        <Button color='red' className='mb-3' onClick={() => {setShownModal('delete')}}>  
-          Account Löschen
-        </Button>
-      </SplitLeftRight>
+      <H1>Admin Panel</H1>
       {event ? (<>
         <H2 className='mb-3'>Dein aktuellstes Event:</H2>
         <AdminEventBox event={event} />
@@ -134,6 +128,9 @@ export default function AdminHomePage() {
         </div>
       </Box>
       <Button color='lime' className='w-full mt-3' onClick={() => setShownModal('create-new-admin')}><b>Neuen Admin anlegen</b></Button>
+      <Button color='red' className='float-right mt-3' onClick={() => {setShownModal('delete')}}>  
+        Account Löschen
+      </Button>
 
       <CreateNewAdminModal isShown={shownModal === 'create-new-admin'} closeModal={closeModal} actionData={actionData} />
       <ChangePasswordModal isShown={shownModal === 'change-password'} closeModal={closeModal} actionData={actionData} />
