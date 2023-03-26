@@ -32,10 +32,15 @@ type LoaderData = {
 export const loader: LoaderFunction = async ({ request }) => {
   const session = await getAdminSession(request)
   const message = session.get('globalMessage') || null;
-  session.unset('globalMessage');
   const admin = await requireAdmin(request)
   const events = await getAdminEvents(admin.id)
-  return json({ admin, event: events[events.length-1], message });
+  return json({ admin, event: events[events.length-1], message },
+    {
+      headers: {
+        "Set-Cookie": await sessionStorage.commitSession(session),
+      }
+    }
+  );
 }
 
 export const action: ActionFunction = async ({ request }) => {
@@ -95,7 +100,6 @@ export default function AdminHomePage() {
   const { admin, event, message } = useLoaderData<LoaderData>();
   const [shownModal, setShownModal] = useState<'create-new-admin' | 'change-password' | 'delete' | null>(null);
 
-  console.log(message)
   useEffect( () => {if (message) {setShownModal(null); console.log(message)}}, [message])
 
   const closeModal = () => {
