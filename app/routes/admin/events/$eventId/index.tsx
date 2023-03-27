@@ -6,7 +6,7 @@ import { SplitLeftRight } from '~/components/elementary/SplitLeftRight';
 import type { getEventWithAdminDetails } from '~/models/event.server'
 import { useMatchesData } from '~/utils';
 
-type LoaderData = {
+export type LoaderData = {
   event: NonNullable<Awaited<ReturnType<typeof getEventWithAdminDetails>>>
 }
 

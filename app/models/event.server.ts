@@ -131,3 +131,12 @@ export async function getEventById(eventId?: Event["id"]) {
     }
   });
 }
+
+export async function updateEvent(eventId: Event["id"], event: Partial<Event>) {
+  return await prisma.event.update({
+    where: {
+      id: eventId,
+    },
+    data: event,
+  });
+}

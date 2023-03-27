@@ -1,17 +1,43 @@
-import { Link } from '@remix-run/react';
+import { Form, Link, useActionData } from '@remix-run/react';
+import type { ActionFunction} from '@remix-run/server-runtime';
+import { redirect } from '@remix-run/server-runtime';
 import { EventDataInputs } from '~/components/admin/events/new/EventDataInputs';
 import { Button } from '~/components/elementary/Button';
 import { H2 } from '~/components/elementary/H2';
 import { SplitLeftRight } from '~/components/elementary/SplitLeftRight';
-import type { getEventWithAdminDetails } from '~/models/event.server'
+import { SubmitButton } from '~/components/forms/SubmitButton';
+import { getEventWithAdminDetails, updateEvent } from '~/models/event.server';
+import { requireAdminId } from '~/session_admin.server';
 import { useMatchesData } from '~/utils';
+import { newEventFormValidationSchema } from '~/utils/forms/new-event';
+import type { ActionData} from '~/utils/forms/validation';
+import { errorResponse, validateAndParseFormData } from '~/utils/forms/validation';
+import type { LoaderData } from './index';
 
-type LoaderData = {
-  event: NonNullable<Awaited<ReturnType<typeof getEventWithAdminDetails>>>
-}
+export const action:ActionFunction = async ({ request, params }) => {
+  const adminId = await requireAdminId(request);
+  const eventId = params.eventId;
+  const event = await getEventWithAdminDetails(eventId);
+  const formData = await request.formData();
+
+  if (!event?.eventAdmins.findIndex((admin) => (admin.id === adminId))) {
+    return redirect('/admin/events');
+  }
+
+  const { errors, formDataForRefill, parsedData } = validateAndParseFormData(formData, newEventFormValidationSchema);
+
+  if (errors) {
+    return errorResponse(errors, formDataForRefill);
+  }
+
+  await updateEvent(eventId, parsedData as Parameters<typeof updateEvent>[1])
+
+  return redirect(`/admin/events/${params.eventId}`)
+} 
 
 const EventEditPage = () => {
   const { event } = useMatchesData('routes/admin/events/$eventId') as LoaderData;
+  const actionData = useActionData() as ActionData;
 
   return (
     <div data-cy='admin-event-page-edit'>
@@ -21,7 +47,11 @@ const EventEditPage = () => {
           <Button color='stone'>Abbrechen</Button>
         </Link>
       </SplitLeftRight>
-      <EventDataInputs defaultValues={event} />
+      <Form method='post'>
+        <EventDataInputs defaultValues={event} errors={actionData?.errors} />
+        <div className='pt-3'></div>
+        <SubmitButton>Änderungen Speichern</SubmitButton>
+      </Form>
     </div>
   )
 }
