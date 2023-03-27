@@ -49,8 +49,11 @@ export const action: ActionFunction = async ({ request }) => {
 
     const customFieldIds = JSON.parse(formData.get('selected-custom-fields') as string);
 
+    const eventData = parsedData as createEventArguments['event'];
+    eventData.visible = true;
+
     const event = await createEvent({
-      event: parsedData as createEventArguments['event'],
+      event: eventData,
       customFieldIds,
       adminId
     });

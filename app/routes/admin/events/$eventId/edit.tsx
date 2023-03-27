@@ -12,7 +12,7 @@ import { useMatchesData } from '~/utils';
 import { newEventFormValidationSchema } from '~/utils/forms/new-event';
 import type { ActionData} from '~/utils/forms/validation';
 import { errorResponse, validateAndParseFormData } from '~/utils/forms/validation';
-import type { LoaderData } from './index';
+import type { LoaderData } from '../$eventId';
 
 export const action:ActionFunction = async ({ request, params }) => {
   const adminId = await requireAdminId(request);

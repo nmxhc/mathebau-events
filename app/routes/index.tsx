@@ -21,7 +21,7 @@ export default function Index() {
     <div data-cy='home-page'>
       <H1>Anstehende Events:</H1>
       <div className='space-y-3' data-cy='upcoming-events'>
-        {upcomingEvents.map((event: Event) => (
+        {upcomingEvents.filter((event: Event) => event.visible).map((event: Event) => (
           <EventBox event={event} key={event.id} />
         ))}
       </div>
