@@ -16,7 +16,7 @@ import type { LoaderData } from './index';
 
 export const action:ActionFunction = async ({ request, params }) => {
   const adminId = await requireAdminId(request);
-  const eventId = params.eventId;
+  const eventId = params.eventId as string;
   const event = await getEventWithAdminDetails(eventId);
   const formData = await request.formData();
 

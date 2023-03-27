@@ -75,6 +75,7 @@ model Event {
   signupEndDate     DateTime
   participantsLimit Int?
   cost              String?
+  visible           Boolean @default(true)
 
   signups          Signup[]
   eventInputFields EventInputField[]
