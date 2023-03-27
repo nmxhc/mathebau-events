@@ -49,8 +49,11 @@ export const action: ActionFunction = async ({ request }) => {
 
     const customFieldIds = JSON.parse(formData.get('selected-custom-fields') as string);
 
+    const eventData = parsedData as createEventArguments['event'];
+    eventData.visible = true;
+
     const event = await createEvent({
-      event: parsedData as createEventArguments['event'],
+      event: eventData,
       customFieldIds,
       adminId
     });
@@ -86,8 +89,12 @@ export default function NewEventPage() {
   const [lastAddedCustomFieldId, setLastAddedCustomFieldId] = useState<string | null>(null);
 
   const commentsField = availableCustomFields.find(iF => iF.name === 'Kommentare')
+  const supplementaryNotesField = availableCustomFields.find(iF => iF.name === 'Sonstige Anmerkungen')
   const initialCustomFields = commentsField ? [commentsField] : []
+  if (supplementaryNotesField) initialCustomFields.push(supplementaryNotesField)
+
   const [customFields, setCustomFields] = useState<CustomField[]>(initialCustomFields);
+  
   if (createdCustomFieldId) {
     const createdCustomField = availableCustomFields.find(c => c.id === createdCustomFieldId);
     if (createdCustomField) {

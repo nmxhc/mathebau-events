@@ -1,17 +1,22 @@
 import { Link } from '@remix-run/react';
+import type { LoaderFunction } from '@remix-run/server-runtime';
 import moment from 'moment';
+import { env } from 'process';
 import { Button } from '~/components/elementary/Button';
 import { H2 } from '~/components/elementary/H2';
 import { SplitLeftRight } from '~/components/elementary/SplitLeftRight';
-import type { getEventWithAdminDetails } from '~/models/event.server'
 import { useMatchesData } from '~/utils';
+import type { LoaderData } from '../$eventId';
 
-export type LoaderData = {
-  event: NonNullable<Awaited<ReturnType<typeof getEventWithAdminDetails>>>
+export const loader:LoaderFunction = async ({ params }) => {
+  return {
+    base_url: env.BASE_URL
+  }
 }
 
 const EventDetailsPage = () => {
   const { event } = useMatchesData('routes/admin/events/$eventId') as LoaderData;
+  const { base_url } = useMatchesData('routes/admin/events/$eventId/index') as { base_url: string };
 
   return (
     <div data-cy='admin-event-page-info'>
@@ -28,6 +33,12 @@ const EventDetailsPage = () => {
       { event.cost && <p><b>Kosten:</b> {event.cost}</p> }
       <p><b>Anmeldezeitraum:</b> {moment(event.signupStartDate).format('DD.MM.YYYY')} bis {moment(event.signupEndDate).format('DD.MM.YYYY')}</p>
       <p><b>Teilnehmer-Limit:</b> {event.participantsLimit ? `${event.participantsLimit}` : 'Kein Limit'} </p>
+      <div className='flex justify-start align-center'>
+      <p><b>Anmeldelink:</b></p>
+        <Link to={`/anmelden/${event.id}`} className='text-blue-300 ml-3'>
+          {`${base_url}/anmelden/${event.id}`}
+        </Link>
+      </div>
     </div>
   )
 }

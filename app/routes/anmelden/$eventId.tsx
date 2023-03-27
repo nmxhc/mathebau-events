@@ -2,6 +2,7 @@ import { Form, useActionData, useCatch, useLoaderData } from '@remix-run/react';
 import type { ActionFunction, LoaderFunction} from '@remix-run/server-runtime';
 import { redirect } from '@remix-run/server-runtime';
 import { json } from '@remix-run/server-runtime';
+import { EventSignupInfo } from '~/components/admin/events/EventSignupInfo';
 import { Box } from '~/components/elementary/Box';
 import { H1 } from '~/components/elementary/H1';
 import { SpaceY } from '~/components/elementary/SpaceY';
@@ -13,6 +14,7 @@ import { EventInfos } from '~/components/home_page/EventInfos';
 import type { getEventById } from '~/models/event.server';
 import { createParticipant } from '~/models/participant.server';
 import { signupParticipant } from '~/models/signup.server';
+import { getTodayDateString } from '~/utils/dates';
 import { sendNewParticipantSignupEmail } from '~/utils/email';
 import { requireEvent } from '~/utils/events';
 import { signupEventFormValidationSchema } from '~/utils/forms/event-signup';
@@ -72,56 +74,60 @@ const EventSignupPage = () => {
           <EventInfos event={event} />
         </Box>
         <Box>
-          <Form method='post' className="space-y-5">
-            <InputWithLabelAndErrorMessage
-              label='Name'
-              name='name'
-              type='text'
-              invalid={actionData?.errors?.name !== undefined}
-              errorMessage={actionData?.errors?.name}
-            />
-            <InputWithLabelAndErrorMessage
-              label='E-Mail'
-              name='email'
-              type='email'
-              invalid={actionData?.errors?.email !== undefined}
-              errorMessage={actionData?.errors?.email}
-            />
-            {event.eventInputFields.map((eIF) => (
-              <div key={eIF.id}>
-                {(eIF.inputField.typeId === 'text' || eIF.inputField.typeId === 'number') && (
-                  <InputWithLabelAndErrorMessage
-                    label={eIF.inputField.name}
-                    name={eIF.inputField.name}
-                    type={eIF.inputField.typeId}
-                    invalid={actionData?.errors?.[eIF.inputField.name] !== undefined}
-                    errorMessage={actionData?.errors?.[eIF.inputField.name]}
-                  />
-                )}
-                {eIF.inputField.typeId === 'select' && (
-                  <SelectWithLabelAndErrorMessage
-                    label={eIF.inputField.name}
-                    name={eIF.inputField.name}
-                    invalid={actionData?.errors?.[eIF.inputField.name] !== undefined}
-                    errorMessage={actionData?.errors?.[eIF.inputField.name]}
-                  >
-                    {eIF.inputField.options.map((option) => (
-                      <option key={option.id} value={option.name}>
-                        {option.name}
-                      </option>
-                    ))}
-                  </SelectWithLabelAndErrorMessage>
-                )}
-                {eIF.inputField.typeId === 'checkbox' && (
-                  <CheckboxWithLabel
-                    label={eIF.inputField.name}
-                    name={eIF.inputField.name}
-                  />
-                )}
-              </div>
-            ))}
-            <SubmitButton>Anmelden</SubmitButton>
-          </Form>
+          { (new Date(event.signupStartDate) > new Date(getTodayDateString())
+          || new Date(event.signupEndDate) < new Date(getTodayDateString()))
+          ? <EventSignupInfo event={event} />
+          : <Form method='post' className="space-y-5">
+              <InputWithLabelAndErrorMessage
+                label='Name'
+                name='name'
+                type='text'
+                invalid={actionData?.errors?.name !== undefined}
+                errorMessage={actionData?.errors?.name}
+              />
+              <InputWithLabelAndErrorMessage
+                label='E-Mail'
+                name='email'
+                type='email'
+                invalid={actionData?.errors?.email !== undefined}
+                errorMessage={actionData?.errors?.email}
+              />
+              {event.eventInputFields.map((eIF) => (
+                <div key={eIF.id}>
+                  {(eIF.inputField.typeId === 'text' || eIF.inputField.typeId === 'number') && (
+                    <InputWithLabelAndErrorMessage
+                      label={eIF.inputField.name}
+                      name={eIF.inputField.name}
+                      type={eIF.inputField.typeId}
+                      invalid={actionData?.errors?.[eIF.inputField.name] !== undefined}
+                      errorMessage={actionData?.errors?.[eIF.inputField.name]}
+                    />
+                  )}
+                  {eIF.inputField.typeId === 'select' && (
+                    <SelectWithLabelAndErrorMessage
+                      label={eIF.inputField.name}
+                      name={eIF.inputField.name}
+                      invalid={actionData?.errors?.[eIF.inputField.name] !== undefined}
+                      errorMessage={actionData?.errors?.[eIF.inputField.name]}
+                    >
+                      {eIF.inputField.options.map((option) => (
+                        <option key={option.id} value={option.name}>
+                          {option.name}
+                        </option>
+                      ))}
+                    </SelectWithLabelAndErrorMessage>
+                  )}
+                  {eIF.inputField.typeId === 'checkbox' && (
+                    <CheckboxWithLabel
+                      label={eIF.inputField.name}
+                      name={eIF.inputField.name}
+                    />
+                  )}
+                </div>
+              ))}
+              <SubmitButton>Anmelden</SubmitButton>
+            </Form>
+          }
         </Box>
       </SpaceY>
     </div>

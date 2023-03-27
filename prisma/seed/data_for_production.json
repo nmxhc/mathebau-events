@@ -13,6 +13,10 @@
       "type": "text"
     },
     {
+      "name": "Sonstige Anmerkungen",
+      "type": "text"
+    },
+    {
       "name": "Ich esse ...",
       "type": "select",
       "required": true,

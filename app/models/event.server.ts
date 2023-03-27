@@ -37,7 +37,7 @@ export function getAdminEvents(adminId: Admin["id"]) {
 
 export type createEventArguments = {
   event: Pick<
-    Event, 'name'|'description'|'location'|'startDate'|'endDate'|'signupStartDate'|'signupEndDate'|'participantsLimit'|'cost'
+    Event, 'name'|'description'|'location'|'startDate'|'endDate'|'signupStartDate'|'signupEndDate'|'participantsLimit'|'cost'|'visible'
   >,
   customFieldIds: string[],
   adminId: Admin["id"],
@@ -138,5 +138,16 @@ export async function updateEvent(eventId: Event["id"], event: Partial<Event>) {
       id: eventId,
     },
     data: event,
+  });
+}
+
+export async function setVisibility(eventId: Event["id"], visible: boolean) {
+  return await prisma.event.update({
+    where: {
+      id: eventId,
+    },
+    data: {
+      visible,
+    }
   });
 }

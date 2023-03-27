@@ -1,4 +1,4 @@
-import { Outlet, useCatch, useLoaderData } from '@remix-run/react';
+import { Form, Outlet, useCatch, useLoaderData } from '@remix-run/react';
 import type { ActionFunction, LoaderFunction} from '@remix-run/server-runtime';
 import { redirect } from '@remix-run/server-runtime';
 import { json } from '@remix-run/server-runtime'
@@ -10,7 +10,7 @@ import { H1 } from '~/components/elementary/H1'
 import { H2 } from '~/components/elementary/H2';
 import { SpaceY } from '~/components/elementary/SpaceY';
 import { SplitLeftRight } from '~/components/elementary/SplitLeftRight';
-import { deleteEvent, getEventWithAdminDetails } from '~/models/event.server'
+import { deleteEvent, getEventWithAdminDetails, setVisibility } from '~/models/event.server'
 import { requireAdminId } from '~/session_admin.server';
 import { EventSignupTable, handleDownloadCsv } from '~/components/admin/events/EventSignupTable';
 import { unvalidateEmailOfParticipant, validateEmailOfParticipant } from '~/models/participant.server';
@@ -18,7 +18,7 @@ import { deleteSinupById } from '~/models/signup.server';
 import { DeleteModal } from '~/components/elementary/modals/DeleteModal';
 import { updateCustomInputValue } from '~/models/custom-fields.server';
 
-type LoaderData = {
+export type LoaderData = {
   event: NonNullable<Awaited<ReturnType<typeof getEventWithAdminDetails>>>
 }
 
@@ -99,6 +99,10 @@ export const action:ActionFunction = async ({ request, params }) => {
     await deleteSinupById(signupId);
   }
 
+  if (action === 'update-visibility') {
+    await setVisibility(event.id, !event.visible)
+  }
+
   return redirect(`/admin/events/${event.id}`)
 }
 
@@ -128,6 +132,15 @@ const EventDetailsPage = () => {
         <Box>
           <H2>Event Status</H2>
           <p><b>Anmeldungen:</b> {event.signups.length}{event.participantsLimit && `/${event.participantsLimit}`} </p>
+          <div className='flex justify-start align-middle'>
+            <p>
+              <b>Sichtbar auf Startseite:</b> {event.visible ? 'Ja' : 'Nein'}
+            </p>
+            <Form method='post'>
+              <input type='hidden' name='action' value='update-visibility' />
+              <button className='ml-5 text-blue-300' type='submit'>Ändern</button>
+            </Form>
+          </div>
           <EventSignupInfo event={event} />
         </Box>
         
