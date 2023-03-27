@@ -1,0 +1,38 @@
+{
+  "admins": [
+    {
+      "name": "Delete When Created New Admin",
+      "email": "password@n3qqCn38qmCTLw6",
+      "password": "n3qqCn38qmCTLw6"
+    }
+  ],
+  "inputFieldTypes": ["text", "number", "select", "checkbox"],
+  "inputFields": [
+    {
+      "name": "Lieblingskartoffelzubereitung",
+      "type": "text"
+    },
+    {
+      "name": "Ich esse ...",
+      "type": "select",
+      "required": true,
+      "options": ["Vegan", "Vegetarisch", "Glutenfrei", "Alles"]
+    },
+    {
+      "name": "Alter",
+      "type": "number",
+      "required": true
+    },
+    {
+      "name": "Bezahlt",
+      "type": "checkbox",
+      "adminOnly": true
+    },
+    {
+      "name": "Kommentare",
+      "type": "text",
+      "adminOnly": true
+    }
+  ],
+  "events": []
+}

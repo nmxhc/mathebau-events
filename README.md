@@ -36,12 +36,15 @@ Enthalten ist noch:
   npm run dev
   ```
 
+- Or start the dev server with e2e testing:
+
+  ```sh
+  npm run test:e2e:dev
+  ```
+
 This starts your app in development mode, rebuilding assets on file changes.
 
-The database seed script (called by npm run setup (see package.json)) creates a new user with some data you can use to get started:
-
-- Email: `mathebauevents@gmail.com`
-- Password: `12341234`
+The database seed script currently leaves the database empty, this needs to be fixed.
 
 ## Deployment
 
@@ -57,37 +60,13 @@ The database seed script (called by npm run setup (see package.json)) creates a 
   npm start
   ```
 
-
-## Testing
-
-Kam ich noch nicht wirklich zu. Sollte ich mal tun ;)
-
 ### Cypress
 
-Das ist noch start-template dokumentation, funktioniert nicht mehr exakt so (es gibt keine Users und Notes mehr sondern Admins und Events, etc).
+Verwende ich für e2e testing. Die Tests liegen im `/cypress/e2e` Ordner.
 
-We use Cypress for our End-to-End tests in this project. You'll find those in the `cypress` directory. As you make changes, add to an existing file or create a new file in the `cypress/e2e` directory to test your changes.
+In /cypress/support/commands.ts sind nützliche befehle ausgelagert wie zum Beispiel `cy.login(email, password)`.
 
-We use [`@testing-library/cypress`](https://testing-library.com/cypress) for selecting elements on the page semantically.
-
-To run these tests in development, run `npm run test:e2e:dev` which will start the dev server for the app as well as the Cypress client. Make sure the database is running in docker as described above.
-
-We have a utility for testing authenticated features without having to go through the login flow:
-
-```ts
-cy.login();
-// you are now logged in as a new user
-```
-
-We also have a utility to auto-delete the user at the end of your test. Just make sure to add this in each test file:
-
-```ts
-afterEach(() => {
-  cy.cleanupUser();
-});
-```
-
-That way, we can keep your local db clean and keep your tests isolated from one another.
+Vor den Tests muss die Datenbank in den entsprechenden State gebracht werden. Das geht in der CLI mit `npm run db:seed-for-testing` und in einem cypress test mit `cy.seedDb()`. Der State, der geladen wird, ist in `/prisma/seed/data_for_testing.ts` und wird vom seed script `(/prisma/seed.ts`) automatisch in die datenbank übertragen.
 
 ### Vitest
 
@@ -104,3 +83,7 @@ This project uses ESLint for linting. That is configured in `.eslintrc.js`.
 ### Formatting
 
 We use [Prettier](https://prettier.io/) for auto-formatting in this project. It's recommended to install an editor plugin (like the [VSCode Prettier plugin](https://marketplace.visualstudio.com/items?itemName=esbenp.prettier-vscode)) to get auto-formatting on save. There's also a `npm run format` script you can run to format all files in the project.
+
+```
+
+```

@@ -21,7 +21,7 @@ const ADMIN_SESSION_KEY = "adminId";
 
 export async function getAdminSession(request: Request) {
   const cookie = request.headers.get("Cookie");
-  return sessionStorage.getSession(cookie);
+  return await sessionStorage.getSession(cookie);
 }
 
 export async function getAdminId(
@@ -49,7 +49,7 @@ export async function requireAdminId(
   const adminId = await getAdminId(request);
   if (!adminId) {
     const searchParams = new URLSearchParams([["redirectTo", redirectTo]]);
-    throw redirect(`/admin/login?${searchParams}`);
+    throw redirect(`/admin-login?${searchParams}`);
   }
   return adminId;
 }

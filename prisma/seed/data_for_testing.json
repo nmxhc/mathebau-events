@@ -1,0 +1,101 @@
+{
+  "admins": [
+    {
+      "name": "Cypress",
+      "email": "test@example.com",
+      "password": "n3qqCn38qmCTLw6"
+    },
+    {
+      "name": "Mathestudentin",
+      "email": "mathestudentin@mathebau.de",
+      "password": "faSfm3zQmYaGTTT"
+    }
+  ],
+  "inputFieldTypes": ["text", "number", "select", "checkbox"],
+  "inputFields": [
+    {
+      "name": "Lieblingskartoffelzubereitung",
+      "type": "text"
+    },
+    {
+      "name": "Ich esse ...",
+      "type": "select",
+      "required": true,
+      "options": ["Vegan", "Vegetarisch", "Kein Gluten", "Alles"]
+    },
+    {
+      "name": "Ich mag Mathematik",
+      "type": "checkbox"
+    },
+    {
+      "name": "Alter",
+      "type": "number",
+      "required": true
+    },
+    {
+      "name": "Steckbrief abgegeben",
+      "type": "checkbox",
+      "adminOnly": true
+    }
+  ],
+  "events": [
+    {
+      "name": "Vergangenes Event",
+      "description": "Dieses Event ist da, um zu testen, wie vergangene Events gehandhabt werden.",
+      "location": "Testlocation",
+      "startDate": "2020-01-01",
+      "endDate": "2020-01-03",
+      "signupStartDate": "2019-12-01",
+      "signupEndDate": "2019-12-14",
+      "admins": ["Cypress", "Mathestudentin"]
+    },
+    {
+      "name": "Laufendes Event",
+      "description": "Dieses Event ist da, um zu testen, wie laufende Events gehandhabt werden.",
+      "location": "Event Laufstrecke",
+      "startDate": [2, "days-ago"],
+      "endDate": [10, "days-from-now"],
+      "signupStartDate": [10, "days-ago"],
+      "signupEndDate": [5, "days-ago"],
+      "admins": ["Cypress"]
+    },
+    {
+      "name": "Zukünftiges Event 1",
+      "description": "Testevent, der Anmeldezeitraum ist vorbei, aber das Event hat noch nicht begonnen.",
+      "location": "Mathebau",
+      "startDate": [10, "days-from-now"],
+      "endDate": [11, "days-from-now"],
+      "signupStartDate": [10, "days-ago"],
+      "signupEndDate": [2, "days-ago"],
+      "admins": ["Cypress"]
+    },
+    {
+      "name": "Zukünftiges Event 2",
+      "description": "Testevent, die Anmeldungen laufen",
+      "location": "Anmeldungen Test-Laufstrecke",
+      "startDate": [10, "days-from-now"],
+      "endDate": [11, "days-from-now"],
+      "signupStartDate": [10, "days-ago"],
+      "signupEndDate": [9, "days-from-now"],
+      "cost": "10 €",
+      "inputFields": [
+        "Lieblingskartoffelzubereitung",
+        "Alter",
+        "Ich esse ...",
+        "Ich mag Mathematik"
+      ],
+      "admins": ["Mathestudentin", "Cypress"]
+    },
+    {
+      "name": "Zukünftiges Event 3",
+      "description": "Testevent, die Anmeldungen haben noch nicht begonnen.",
+      "location": "Wird noch bekannt gegeben",
+      "startDate": [20, "days-from-now"],
+      "endDate": [30, "days-from-now"],
+      "signupStartDate": [10, "days-from-now"],
+      "signupEndDate": [15, "days-from-now"],
+      "participantsLimit": 50,
+      "admins": ["Cypress", "Mathestudentin"]
+    }
+  ]
+}

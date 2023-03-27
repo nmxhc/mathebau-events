@@ -15,6 +15,7 @@ import {
 
 import tailwindStylesheetUrl from "./styles/tailwind.css";
 import { getAdmin } from "./session_admin.server";
+import { Layout } from './components/Layout';
 
 export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: tailwindStylesheetUrl }];
@@ -38,15 +39,17 @@ export const loader: LoaderFunction = async ({ request }) => {
 
 export default function App() {
   return (
-    <html lang="en" className="h-full">
+    <html lang="de" className="h-full">
       <head>
         <Meta />
         <Links />
       </head>
       <body className="h-full">
-        <Outlet />
-        <ScrollRestoration />
+        <Layout>
+          <Outlet />
+        </Layout>
         <Scripts />
+        <ScrollRestoration />
         <LiveReload />
       </body>
     </html>

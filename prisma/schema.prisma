@@ -30,8 +30,11 @@ model AdminPassword {
 model Participant {
   id    String @id @default(cuid())
   name  String
-  email String @unique
-  validatedEmail Boolean @default(false)
+  email String
+
+  emailValidationToken String  @unique @default(cuid())
+  validatedEmail       Boolean @default(false)
+  dedicatedToOneSignup Boolean @default(true)
 
   signups Signup[]
 }
@@ -107,6 +110,7 @@ model InputField {
   name              String
   type              InputFieldType @relation(fields: [typeId], references: [name], onDelete: Cascade, onUpdate: Cascade)
   required          Boolean @default(false)
+  adminOnly         Boolean @default(false)
   options           Option[] // only for InputFieldType.Select
   
   eventInputFields  EventInputField[]
@@ -114,16 +118,16 @@ model InputField {
 }
 
 model InputFieldType {
-  name String @unique
+  name String @id
   
   inputFields InputField[]
 }
 
 model Option {
-  id         String @unique @default(cuid())
+  id         String @id @default(cuid())
   name       String
   inputField InputField @relation(fields: [inputFieldId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   
   inputFieldId String
-  @@id([name, inputFieldId])
+  @@unique([name, inputFieldId])
 }
