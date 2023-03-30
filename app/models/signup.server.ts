@@ -44,10 +44,7 @@ export async function getSignupById(signupId?: string) {
     where: {
       id: signupId,
     },
-    include: {
-      event: true,
-      participant: true,
-    }
+    include: getSignupInclude
   });
 }
 
@@ -74,4 +71,35 @@ export async function deleteSinupById(signupId?: string) {
     });
   }
   return signup;
+}
+
+export async function getSignupByParticipantId(participantId: string) {
+  return await prisma.signup.findFirst({
+    where: {
+      participantId,
+    },
+    include: getSignupInclude
+  });
+}
+
+const getSignupInclude = {
+  event: {
+    include: {
+      eventAdmins: {
+        include: {
+          admin: true,
+        }
+      }
+    }
+  },
+  participant: true,
+  signupEventInputValues: {
+    include: {
+      eventInputField: {
+        include: {
+          inputField: true,
+        }
+      }
+    }
+  }
 }

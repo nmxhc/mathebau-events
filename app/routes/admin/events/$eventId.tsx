@@ -207,6 +207,7 @@ const EventDetailsPage = () => {
             invalid={actionData?.errors?.email !== undefined}
             errorMessage={actionData?.errors?.email}
             />
+          <div className='mb-3'></div>
           <SubmitButton>Hinzufügen</SubmitButton>
         </Form>
       </FormModal>
