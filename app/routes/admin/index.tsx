@@ -17,7 +17,8 @@ import { verifyAdminLogin} from '~/models/admin.server';
 import { createAdmin, deleteAdmin } from '~/models/admin.server';
 import { getAdminEvents } from '~/models/event.server';
 import { getAdminSession, requireAdmin, sessionStorage } from '~/session_admin.server';
-import type { ArrayElement } from '~/utils';
+import type { ArrayElement} from '~/utils';
+import { validateEmail } from '~/utils';
 import { newAdminFormValidationSchema } from '~/utils/forms/new-admin';
 import type { ActionData} from '~/utils/forms/validation';
 import { errorResponse, validateAndParseFormData } from '~/utils/forms/validation';
@@ -80,6 +81,9 @@ export const action: ActionFunction = async ({ request }) => {
     const { errors, formDataForRefill, parsedData } = validateAndParseFormData(formData, newAdminFormValidationSchema);
     if (errors) {
       return errorResponse(errors, formDataForRefill);
+    }
+    if (!validateEmail(formData.get('newEmail'))) {
+      return errorResponse({ newEmail: 'Email ist nicht gültig' });
     }
     const session = await getAdminSession(request);
     session.flash('globalMessage', 'New admin created');

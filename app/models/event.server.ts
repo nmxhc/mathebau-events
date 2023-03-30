@@ -151,3 +151,12 @@ export async function setVisibility(eventId: Event["id"], visible: boolean) {
     }
   });
 }
+
+export async function addAdminToEvent(eventId: Event["id"], adminId: Admin["id"]) {
+  return await prisma.eventAdmin.create({
+    data: {
+      eventId,
+      adminId,
+    }
+  });
+}
