@@ -3,7 +3,7 @@ import type { LoaderFunction } from '@remix-run/server-runtime';
 import { json } from '@remix-run/server-runtime';
 import { H1 } from '~/components/elementary/H1'
 import { getParticipantByMailToken, validateEmailOfParticipant } from '~/models/participant.server';
-import { getSignupByParticipantId } from '~/models/signup.server';
+import { getSignupByParticipantId, isSignupOnWaitlist } from '~/models/signup.server';
 import { sendEventSignupConfirmationEmail } from '~/utils/email';
 
 type LoaderData = {
@@ -21,7 +21,7 @@ export const loader: LoaderFunction = async ({ params }) => {
   await validateEmailOfParticipant(params.mailToken);
   const signup = await getSignupByParticipantId(participant.id);
   if (signup && !participant.validatedEmail) {
-    sendEventSignupConfirmationEmail(signup, false) //TODO: check if isOnWaitingList
+    sendEventSignupConfirmationEmail(signup, await isSignupOnWaitlist(signup.id))
   }
   return json({ participant });
 }

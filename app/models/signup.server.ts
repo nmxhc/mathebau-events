@@ -103,3 +103,26 @@ const getSignupInclude = {
     }
   }
 }
+
+export async function isSignupOnWaitlist(signupId: string) {
+  const signup = await prisma.signup.findUnique({
+    where: {
+      id: signupId,
+    },
+    include: getSignupInclude
+  });
+  if (signup?.event.participantsLimit) {
+    const signups = await prisma.signup.findMany({
+      orderBy: {
+        signupTime: "asc",
+      },
+      select: {
+        id: true,
+      }
+    })
+    const signupIndex = signups.findIndex((s) => s.id === signupId);
+    return signupIndex >= signup.event.participantsLimit;
+  } else {
+    return false;
+  }
+}

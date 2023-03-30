@@ -30,7 +30,7 @@ Hallo ${participant.name},
 
 vielen Dank für deine Anmeldung zum Event "${event.name}".${(event.participantsLimit && event.participantsLimit <= event.signups.length) ? ' Aktuell stehst du auf der Warteliste, da das Teilnehmerlimit erreicht ist. Falls du von deinen Event-Administratoren nichts weiteres hörst, frag bitte bei ihnen nach!': ''}
 
-Bitte bestätige deine Anmeldung, indem du auf den folgenden Link klickst:
+Bitte bestätige deine Email, indem du auf den folgenden Link klickst:
 ${process.env.BASE_URL}/participant/email-bestaetigung/${participant.emailValidationToken}
 
 `,
@@ -89,8 +89,8 @@ E-Mail: ${signup.participant.email}
 ${signupDataString}
 -----------------------------------------
 
-${!isOnWaitlist && `Wenn etwas so wichtiges dazwischen kommt, dass du leider nicht am Event teilnehmen kannst, melde dich bitte bei deinen Event-Administratoren.
-`}
+${!isOnWaitlist ? `Wenn etwas so wichtiges dazwischen kommt, dass du leider nicht am Event teilnehmen kannst, melde dich bitte bei deinen Event-Administratoren.
+`:''}
 Viele Grüße von
 ${signup.event.eventAdmins.map((eventAdmin) => eventAdmin.admin.name).join(', ')}
 und dem Mathebau
