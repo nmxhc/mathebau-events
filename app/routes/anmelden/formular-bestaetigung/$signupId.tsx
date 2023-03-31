@@ -3,25 +3,31 @@ import type { LoaderFunction} from '@remix-run/server-runtime';
 import { json } from '@remix-run/server-runtime';
 import { Box } from '~/components/elementary/Box'
 import { H1 } from '~/components/elementary/H1'
-import { getSignupById } from '~/models/signup.server';
+import { getSignupById, isSignupOnWaitlist } from '~/models/signup.server';
 
 type LoaderData = {
   signup: NonNullable<Awaited<ReturnType<typeof getSignupById>>>
+  isOnWaitlist: boolean
 };
 
 export const loader: LoaderFunction = async ({ params }) => {
   const signup = await getSignupById(params.signupId);
-  return json({ signup });
+  let isOnWaitlist = false;
+  if (signup) {
+    isOnWaitlist = await isSignupOnWaitlist(signup.id);
+    console.log('isOnWaitlist', isOnWaitlist)
+  }
+  return json({ signup, isOnWaitlist });
 }
 
 
 const SignupFormSuccessPage = () => {
 
-  const { signup } = useLoaderData() as LoaderData;
+  const { signup, isOnWaitlist } = useLoaderData() as LoaderData;
 
   return (
     <div data-cy='signup-form-success-page'>
-      <H1>Deine Anmeldung für <b>{signup.event.name}</b> war erfolgreich!</H1>
+      {!isOnWaitlist ? <H1>Deine Anmeldung für <b>{signup.event.name}</b> war erfolgreich!</H1> : <H1>Du stehst auf der Warteliste!</H1>  }
       <Box>
         <p>
           Bitte bestätige deine Mailadresse, indem du auf den Bestätigungslink klickst, den wir dir geschickt haben.
