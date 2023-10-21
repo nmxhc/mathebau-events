@@ -69,10 +69,9 @@ Deine ${isOnWaitlist ? 'Email' : `Anmeldung für das Event "${signup.event.name}
 ${isOnWaitlist ? `Du stehst aktuell auf der Warteliste, da das Teilnehmerlimit erreicht ist. Falls du von deinen Event-Administratoren nicht demnächst etwas weiteres hörst, frag bitte bei ihnen nach, ob du doch noch teilnehmen kannst!
 
 Du stehst auf der Warteliste für folgendes Event:` : `Du bist für folgendes Event angemeldet:`}
-
 -----------------------------------------
 Event: ${signup.event.name}
-Datum: ${signup.event.startDate.toLocaleDateString()} bis ${signup.event.endDate.toLocaleDateString()}
+Datum: ${signup.event.startDate.toLocaleDateString('de-DE')} bis ${signup.event.endDate.toLocaleDateString('de-DE')}
 Ort: ${signup.event.location} ${signup.event.cost && `
 Kosten: ${signup.event.cost}`}
 
@@ -95,7 +94,7 @@ Viele Grüße von
 ${signup.event.eventAdmins.map((eventAdmin) => eventAdmin.admin.name).join(', ')}
 und dem Mathebau
 
-PS: Bei Bugs oder Anregungen zum Eventtool wende dich an tomk@mathebau.de oder öffne ein Issue (oder Pull-Request :) auf GitHub: github.com/paul-goblin/mathebau-events
+PS: Bei Bugs oder Anregungen zum Eventtool wende dich an tomk@mathebau.de oder öffne ein Issue (oder Pull-Request :) auf GitHub: https://github.com/paul-goblin/mathebau-events
 `,
   };
   transporter.sendMail(mailOptions, (error, info) => {
