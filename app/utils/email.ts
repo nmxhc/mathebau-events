@@ -74,7 +74,7 @@ Du stehst auf der Warteliste für folgendes Event:` : `Du bist für folgendes Ev
 Event: ${signup.event.name}
 Datum: ${signup.event.startDate.toLocaleDateString()} bis ${signup.event.endDate.toLocaleDateString()}
 Ort: ${signup.event.location} ${signup.event.cost && `
-Kosten: ${signup.event.cost}€`}
+Kosten: ${signup.event.cost}`}
 
 ${signup.event.description}
 
