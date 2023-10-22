@@ -24,7 +24,7 @@ export function sendNewParticipantSignupEmail(
   const mailOptions = {
     from: `"Mathebau Events" <${process.env.EMAIL_USER}>`,
     to: participant.email,
-    subject: `Anmeldung für ${event.name}`,
+    subject: `${(event.participantsLimit && event.participantsLimit <= event.signups.length) ? 'Eintrag auf Warteliste' : 'Anmeldung' } für ${event.name}`,
     text: `
 Hallo ${participant.name},
 
@@ -56,11 +56,10 @@ export function sendEventSignupConfirmationEmail(
     return `${signupEventInputValue.eventInputField.inputField.name}: ${signupEventInputValue.value}`;
   }).join('\n');
 
-  console.log(isOnWaitlist)
   const mailOptions = {
     from: `"Mathebau Events" <${process.env.EMAIL_USER}>`,
     to: signup.participant.email,
-    subject: `Anmeldung für ${signup.event.name} bestätigt`,
+    subject: `${isOnWaitlist ? 'Eintrag auf Warteliste' : 'Anmeldung' } für ${signup.event.name} bestätigt`,
     text: `
 Hallo ${signup.participant.name},
 

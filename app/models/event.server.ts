@@ -4,15 +4,30 @@ import { prisma } from "~/db.server";
 
 export type { Event } from "@prisma/client";
 
-export function getUpcomingEvents() {
-  return prisma.event.findMany({
+export type EventWithSignups = Event & {
+  signups: {
+      eventId: string;
+  }[];
+};
+
+export async function getUpcomingEvents() {
+  const upcomingEvents = await prisma.event.findMany({
     where: {
       startDate: {
         gte: new Date(),
       }
     },
+    include: {
+      signups: {
+        select: {
+          eventId: true,
+        }
+      }
+    },
     orderBy: { startDate: "asc" },
   });
+
+  return upcomingEvents;
 }
 
 export function getAdminEvents(adminId: Admin["id"]) {

@@ -12,6 +12,9 @@ module.exports = {
     "bg-stone-600",
     "text-stone-50",
     "hover:bg-stone-700",
+    "bg-amber-600",
+    "text-amber-50",
+    "hover:bg-amber-700",
   ],
   plugins: [],
 };

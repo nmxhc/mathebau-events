@@ -68,10 +68,15 @@ const EventSignupPage = () => {
 
   return (
     <div data-cy='event-signup-page'>
-      <H1>Anmelden für {event.name}</H1>
+      {event.participantsLimit && event.signups.length >= event.participantsLimit ? (
+        <H1><span className=' text-amber-500'>Warteliste für {event.name}</span></H1>
+      ) : (
+        <H1>Anmelden für {event.name}</H1>
+      )}
       <SpaceY>
         <Box>
           <EventInfos event={event} />
+          <EventSignupInfo event={event} />
         </Box>
         <Box>
           { (new Date(event.signupStartDate) > new Date(getTodayDateString())
@@ -125,7 +130,13 @@ const EventSignupPage = () => {
                   )}
                 </div>
               ))}
-              <SubmitButton>Anmelden</SubmitButton>
+              <SubmitButton>
+                {event.participantsLimit && event.signups.length >= event.participantsLimit ? (
+                  'Auf Warteliste setzen'
+                ) : (
+                  'Anmelden'
+                )}
+              </SubmitButton>
             </Form>
           }
         </Box>

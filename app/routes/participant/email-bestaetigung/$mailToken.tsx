@@ -9,6 +9,7 @@ import { sendEventSignupConfirmationEmail } from '~/utils/email';
 
 type LoaderData = {
   participant: NonNullable<Awaited<ReturnType<typeof validateEmailOfParticipant>>>
+  isOnWaitlist: boolean
 };
 
 export const loader: LoaderFunction = async ({ params }) => {
@@ -21,22 +22,25 @@ export const loader: LoaderFunction = async ({ params }) => {
   }
   await validateEmailOfParticipant(params.mailToken);
   const signup = await getSignupByParticipantId(participant.id);
-  if (signup && !participant.validatedEmail) {
-    const isOnWaitlist = await isSignupOnWaitlist(signup.id);
-    sendEventSignupConfirmationEmail(signup, isOnWaitlist)
+  let isOnWaitlist = false;
+  if (signup) {
+    isOnWaitlist = await isSignupOnWaitlist(signup.id);
+    if (!participant.validatedEmail) {
+      sendEventSignupConfirmationEmail(signup, isOnWaitlist)
+    }
   }
-  return json({ participant });
+  return json({ participant, isOnWaitlist });
 }
 
 const ValidateMailPage = () => {
 
-  const { participant } = useLoaderData() as LoaderData;
+  const { participant, isOnWaitlist } = useLoaderData() as LoaderData;
 
   return (
     <div data-cy='validate-mail-page'>
       <H1>Hallo {participant.name}</H1>
       <Box>
-        Deine Mailadresse wurde erfolgreich bestätigt. Du solltest in Kürze eine Mail mit der Zusammenfassung deiner Anmeldung erhalten. Falls nicht, schau bitte auch in deinem Spam-Ordner nach.
+        Deine Mailadresse wurde erfolgreich bestätigt. {isOnWaitlist && <span className=' text-amber-500'>Du bist auf der Warteliste.</span>} Du solltest in Kürze eine Mail mit der Zusammenfassung deiner Anmeldung erhalten. Falls nicht, schau bitte auch in deinem Spam-Ordner nach.
       </Box>
     </div>
   )

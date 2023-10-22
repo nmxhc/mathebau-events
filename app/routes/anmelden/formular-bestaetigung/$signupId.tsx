@@ -15,7 +15,6 @@ export const loader: LoaderFunction = async ({ params }) => {
   let isOnWaitlist = false;
   if (signup) {
     isOnWaitlist = await isSignupOnWaitlist(signup.id);
-    console.log('isOnWaitlist', isOnWaitlist)
   }
   return json({ signup, isOnWaitlist });
 }
@@ -27,7 +26,7 @@ const SignupFormSuccessPage = () => {
 
   return (
     <div data-cy='signup-form-success-page'>
-      {!isOnWaitlist ? <H1>Deine Anmeldung für <b>{signup.event.name}</b> war erfolgreich!</H1> : <H1>Du stehst auf der Warteliste!</H1>  }
+      {!isOnWaitlist ? <H1>Deine Anmeldung für <b>{signup.event.name}</b> war erfolgreich!</H1> : <H1><span className=' text-amber-500'>Du stehst auf der Warteliste!</span></H1>  }
       <Box>
         <p>
           Bitte bestätige deine Mailadresse, indem du auf den Bestätigungslink klickst, den wir dir geschickt haben.
