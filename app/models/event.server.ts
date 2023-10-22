@@ -53,9 +53,17 @@ export async function createEvent({event, adminId, customFieldIds}:createEventAr
         }
       },
       eventInputFields: {
-        create: customFieldIds.map((id) => ({
+        create: customFieldIds.map((id, index) => ({
           inputFieldId: id,
+          position: index,
         })),
+      }
+    },
+    include: {
+      eventInputFields: {
+        include: {
+          inputField: true,
+        }
       }
     }
   });
@@ -89,7 +97,10 @@ export async function getEventWithAdminDetails(eventId?: Event["id"]) {
       eventInputFields: {
         include: {
           inputField: true,
-        }
+        },
+        orderBy: {
+          position: "asc",
+        },
       }
     },
   });
@@ -114,6 +125,9 @@ export async function getEventById(eventId?: Event["id"]) {
           inputField: {
             adminOnly: false,
           }
+        },
+        orderBy: {
+          position: "asc",
         },
         include: {
           inputField: {

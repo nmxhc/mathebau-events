@@ -46,7 +46,7 @@ export const action: ActionFunction = async ({ request }) => {
     if (errors) {
       return errorResponse(errors, formDataForRefill);
     }
-
+     
     const customFieldIds = JSON.parse(formData.get('selected-custom-fields') as string);
 
     const eventData = parsedData as createEventArguments['event'];
