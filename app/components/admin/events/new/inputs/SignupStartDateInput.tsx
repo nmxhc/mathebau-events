@@ -12,7 +12,7 @@ export const SignupStartDateInput:FC<
       name="signupStartDate"
       label="Anmeldestart"
       min={getTodayDateString()}
-      defaultValue={getTodayDateString()}
+      defaultValue={defaultValue ? defaultValue : getTodayDateString()}
       inputElementRef={inputElementRef}
       onChange={onChange}
       invalid={errorMessage !== undefined}

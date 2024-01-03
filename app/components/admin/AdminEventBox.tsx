@@ -20,10 +20,10 @@ export const AdminEventBox:FC<{event: ArrayElement<NonNullable<Awaited<ReturnTyp
         <div>
           <p><b>Wann?</b> {moment(event.startDate).format('DD.MM.YYYY')} {event.endDate && `bis ${moment(event.endDate).format('DD.MM.YYYY')}`}</p>
           <p><b>Wo?</b> {event.location}</p>
+          <p><b>Anmeldungen:</b> {event.signups.length}{event.participantsLimit && `/${event.participantsLimit}`} </p>
         </div>
         <div>
           <EventSignupInfo event={event} />
-          <p><b>Teilnehmer:</b> {event.signups.length}{event.participantsLimit && `/${event.participantsLimit}`} </p>
         </div>
       </div>
     </Box>

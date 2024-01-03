@@ -46,7 +46,7 @@ export const action: ActionFunction = async ({ request }) => {
     if (errors) {
       return errorResponse(errors, formDataForRefill);
     }
-
+     
     const customFieldIds = JSON.parse(formData.get('selected-custom-fields') as string);
 
     const eventData = parsedData as createEventArguments['event'];
@@ -93,7 +93,7 @@ export default function NewEventPage() {
   const initialCustomFields = commentsField ? [commentsField] : []
   if (supplementaryNotesField) initialCustomFields.push(supplementaryNotesField)
 
-  const [customFields, setCustomFields] = useState<CustomField[]>(initialCustomFields);
+  const [customFields, setCustomFields] = useState<CustomField[]>(initialCustomFields.sort((a,b) => Number(a.adminOnly) - Number(b.adminOnly)));
   
   if (createdCustomFieldId) {
     const createdCustomField = availableCustomFields.find(c => c.id === createdCustomFieldId);
@@ -124,7 +124,7 @@ export default function NewEventPage() {
   const addField = (fieldId: string) => {
     const field = availableCustomFields.find(field => field.id === fieldId);
     if (field) {
-      setCustomFields([...customFields, field]);
+      setCustomFields([...customFields, field].sort((a,b) => Number(a.adminOnly) - Number(b.adminOnly)));
     }
   }
 
@@ -132,6 +132,19 @@ export default function NewEventPage() {
     const field = customFields.find(field => field.id === fieldId);
     if (field) {
       setCustomFields(customFields.filter(field => field.id !== fieldId));
+    }
+  }
+
+  const moveField = (fieldId: string, direction: -1|1) => {
+    const field = customFields.find(field => field.id === fieldId);
+    if (field) {
+      const index = customFields.indexOf(field);
+      if (index === 0 && direction === -1) return;  // can't move first element up
+      if (index === customFields.length - 1 && direction === 1) return; // can't move last element down
+      const newCustomFields = [...customFields];
+      newCustomFields.splice(index, 1);
+      newCustomFields.splice(index + direction, 0, field);
+      setCustomFields(newCustomFields.sort((a,b) => Number(a.adminOnly) - Number(b.adminOnly)));
     }
   }
 
@@ -169,7 +182,7 @@ export default function NewEventPage() {
 
         <Box>
           <H2>Abfragefelder</H2>
-          <SelectedCustomFields customFields={customFields} removeField={removeField} />
+          <SelectedCustomFields customFields={customFields} removeField={removeField} moveField={moveField} />
           <CustomFieldSelection
             availableCustomFields={availableCustomFields}
             customFields={customFields}

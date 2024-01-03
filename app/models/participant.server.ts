@@ -14,6 +14,14 @@ export function createParticipant(participant: createParticipantArguments) {
   });
 }
 
+export async function getParticipantByMailToken(emailValidationToken: string) {
+  return prisma.participant.findUnique({
+    where: {
+      emailValidationToken,
+    },
+  });
+}
+
 export function validateEmailOfParticipant(emailValidationToken?: string) {
   return prisma.participant.update({
     where: {

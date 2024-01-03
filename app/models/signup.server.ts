@@ -44,10 +44,7 @@ export async function getSignupById(signupId?: string) {
     where: {
       id: signupId,
     },
-    include: {
-      event: true,
-      participant: true,
-    }
+    include: getSignupInclude
   });
 }
 
@@ -74,4 +71,61 @@ export async function deleteSinupById(signupId?: string) {
     });
   }
   return signup;
+}
+
+export async function getSignupByParticipantId(participantId: string) {
+  return await prisma.signup.findFirst({
+    where: {
+      participantId,
+    },
+    include: getSignupInclude
+  });
+}
+
+const getSignupInclude = {
+  event: {
+    include: {
+      eventAdmins: {
+        include: {
+          admin: true,
+        }
+      }
+    }
+  },
+  participant: true,
+  signupEventInputValues: {
+    include: {
+      eventInputField: {
+        include: {
+          inputField: true,
+        }
+      }
+    }
+  }
+}
+
+export async function isSignupOnWaitlist(signupId: string) {
+  const signup = await prisma.signup.findUnique({
+    where: {
+      id: signupId,
+    },
+    include: getSignupInclude
+  });
+  if (signup?.event.participantsLimit) {
+    const signups = await prisma.signup.findMany({
+      where: {
+        eventId: signup.event.id,
+      },
+      orderBy: {
+        signupTime: "asc",
+      },
+      select: {
+        id: true,
+      }
+    })
+    const signupIndex = signups.findIndex((s) => s.id === signupId);
+    return signupIndex >= signup.event.participantsLimit;
+  } else {
+    return false;
+  }
 }
