@@ -26,6 +26,10 @@ Das ist der Versuch, ein besseres Event Tool zu schreiben.
   npm start
   ```
 
+- Login with the default admin account (specified in `prisma/seed/data_for_production.json`, email: `password@n3qqCn38qmCTLw6`, password: `n3qqCn38qmCTLw6`)
+
+- Create new admin account and delete the default admin account
+
 ## Development
 
 - Install the dependencies with `npm install`
